@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEED EVENT+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="config.js" defer></script>
+    <!-- Animation & Fonts -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-bg {
+            background: linear-gradient(120deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+    </style>
+</head>
+
+<body class="text-slate-700">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <span class="text-2xl font-extrabold tracking-tighter gradient-text">SEED EVENT+</span>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <button onclick="showSection('events')"
+                        class="text-slate-500 hover:text-blue-600 font-medium transition-colors text-sm uppercase tracking-wide">Events</button>
+                    <button onclick="showSection('check')"
+                        class="text-slate-500 hover:text-blue-600 font-medium transition-colors text-sm uppercase tracking-wide">My
+                        Status</button>
+                    <div class="border-l border-gray-200 pl-8">
+                        <a href="admin.html"
+                            class="text-xs px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition-all">Admin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-32 pb-20 px-4 min-h-screen hero-bg">
+
+        <!-- Header -->
+        <header id="main-header" class="text-center mb-16" data-aos="fade-up">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-4">探索精彩活動</h1>
+            <p class="text-lg text-slate-500 max-w-2xl mx-auto">SEED EVENT+ 近期活動，立即報名參加。</p>
+        </header>
+
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto">
+            </div>
+            <p class="mt-6 text-slate-400 font-medium tracking-wide">載入活動中...</p>
+        </div>
+
+        <!-- 1. Event List View -->
+        <div id="view-events" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto hidden">
+            <!-- Event Cards will be injected here -->
+        </div>
+
+        <!-- 2. Event Details View (New) -->
+        <div id="view-details" class="hidden max-w-4xl mx-auto animate__animated animate__fadeIn">
+            <button onclick="showSection('events')"
+                class="mb-6 flex items-center text-slate-500 hover:text-blue-600 transition-colors">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                返回列表
+            </button>
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                <div class="h-64 bg-gradient-to-r from-blue-600 to-indigo-700 relative">
+                    <div class="absolute inset-0 bg-black/20"></div>
+                    <div class="absolute bottom-0 left-0 p-8 text-white">
+                        <h1 class="text-4xl font-extrabold mb-2" id="detail-name">Event Name</h1>
+                        <div class="flex items-center space-x-4 text-sm font-medium opacity-90">
+                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg> <span id="detail-date"></span></span>
+                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                    </path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg> <span id="detail-loc"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-10">
+                    <div class="flex justify-between items-start mb-8">
+                        <div class="prose prose-slate max-w-none text-slate-600">
+                            <p id="detail-desc" class="whitespace-pre-line text-lg leading-relaxed">Description goes
+                                here...</p>
+                        </div>
+                        <div class="ml-8 bg-slate-50 p-6 rounded-2xl border border-slate-100 min-w-[200px] text-center">
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">票價
+                                Price</span>
+                            <span class="block text-3xl font-extrabold text-slate-800" id="detail-price">$0</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-go-register" onclick="showRegisterForm()"
+                        class="w-full bg-slate-900 text-white py-5 rounded-2xl hover:bg-black font-bold text-xl shadow-lg shadow-blue-200/50 transition-all transform hover:-translate-y-1">
+                        立即報名 Join Event
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Registration Form View (New) -->
+        <div id="view-register" class="hidden max-w-2xl mx-auto animate__animated animate__fadeInUp">
+            <button onclick="showSection('details')"
+                class="mb-6 flex items-center text-slate-500 hover:text-blue-600 transition-colors">
+                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                返回活動詳情
+            </button>
+            <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">填寫報名資訊</h2>
+                <p class="text-slate-500 mb-8" id="reg-form-subtitle">請填寫以下資訊以完成報名</p>
+
+                <form id="registration-form" class="space-y-6">
+                    <input type="hidden" id="event-id">
+
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase">姓名 Name <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" id="reg-name" required
+                            class="w-full p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none font-medium text-slate-700"
+                            placeholder="您的真實姓名">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Email <span
+                                class="text-red-500">*</span></label>
+                        <input type="email" id="reg-email" required
+                            class="w-full p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none font-medium text-slate-700"
+                            placeholder="example@email.com">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase">電話 Phone <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" id="reg-phone" required
+                            class="w-full p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none font-medium text-slate-700"
+                            placeholder="0912345678">
+                    </div>
+
+                    <!-- Dynamic Fields Container -->
+                    <div id="dynamic-fields-container" class="space-y-6 pt-6 border-t border-slate-100">
+                        <!-- Dynamic fields injected here -->
+                    </div>
+
+                    <div class="pt-8">
+                        <button type="submit"
+                            class="w-full bg-blue-600 text-white py-5 rounded-2xl hover:bg-blue-700 font-bold text-lg shadow-xl shadow-blue-200 transition-transform transform hover:-translate-y-1">
+                            確認送出 Confirm Registration
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- 4. Check Registration Section -->
+        <div id="view-check" class="hidden max-w-xl mx-auto" data-aos="zoom-in">
+            <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2 text-center">查詢報名狀態</h2>
+                <p class="text-center text-slate-400 mb-8">輸入資訊以查詢您的票券與 QR Code</p>
+                <form id="check-form" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Email 或 電話</label>
+                        <input type="text" id="check-query" placeholder="e.g. user@example.com" required
+                            class="w-full p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-slate-900 text-white py-4 rounded-xl hover:bg-black font-bold text-lg transition-transform transform active:scale-95 shadow-lg">查詢
+                        Search</button>
+                </form>
+
+                <div id="check-results" class="mt-8 space-y-4 text-center"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification"
+        class="fixed bottom-4 right-4 hidden bg-green-500 text-white px-6 py-3 rounded shadow-lg transition-opacity duration-500">
+        報名成功！
+    </div>
+
+    <script>
+        // DOM Elements
+        const loadingSpinner = document.getElementById('loading');
+        const modal = document.getElementById('modal'); // Note: This might be unused now
+        const form = document.getElementById('registration-form');
+        const notif = document.getElementById('notification');
+        const mainHeader = document.getElementById('main-header');
+
+        function showSection(section) {
+            // Hide all views first
+            ['view-events', 'view-details', 'view-register', 'view-check'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            if (section === 'events') {
+                document.getElementById('view-events').classList.remove('hidden');
+                mainHeader.style.display = 'block';
+            } else if (section === 'check') {
+                document.getElementById('view-check').classList.remove('hidden');
+                mainHeader.style.display = 'none';
+            } else {
+                document.getElementById(`view-${section}`).classList.remove('hidden');
+                mainHeader.style.display = 'none';
+            }
+        }
+
+        // Fetch Events on Load
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (!API_URL || API_URL.includes("REPLACE")) {
+                alert("請在 config.js 中設定 API_URL (Google Apps Script Deployment URL)");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}?action=getEvents`);
+                const result = await response.json();
+
+                loadingSpinner.classList.add('hidden');
+                // Default show events
+                if (result.status === 'success' && result.data.length > 0) {
+                    window.allEvents = result.data; // Store globally
+                    renderEvents(result.data.filter(e => e.status !== 'Draft'));
+                    document.getElementById('view-events').classList.remove('hidden');
+                } else {
+                    document.getElementById('view-events').innerHTML = `<p class="col-span-full text-center text-gray-500">目前沒有開放的活動。</p>`;
+                    document.getElementById('view-events').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loadingSpinner.classList.add('hidden');
+                alert('載入活動失敗，請稍後再試。');
+            }
+        });
+
+        // Check Registration Logic
+        document.getElementById('check-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('check-query').value;
+            const resDiv = document.getElementById('check-results');
+            resDiv.innerHTML = '<p class="text-center text-gray-500">查詢中...</p>';
+
+            try {
+                // Determine if query looks like email
+                let param = query.includes('@') ? `email=${query}` : `phone=${query}`;
+                const res = await fetch(`${API_URL}?action=getMyRegistrations&${param}`);
+                const json = await res.json();
+
+                if (json.status === 'success' && json.data.length > 0) {
+                    resDiv.innerHTML = json.data.map(r => {
+                        let qrBlock = '';
+                        // Default true if undefined, strictly check for false
+                        const showQr = r.event_enable_qr !== false;
+
+                        if (r.qr_code_data && showQr) {
+                            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(r.qr_code_data)}`;
+
+                            if (r.check_in_status === 'CheckedIn') {
+                                // Checked In State
+                                qrBlock = `
+                                    <div class="mt-4 text-center border-t pt-4 relative">
+                                        <div class="absolute inset-0 bg-white/80 flex items-center justify-center z-10 backdrop-blur-sm rounded">
+                                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold border border-green-200 shadow-sm">
+                                                <i class="fas fa-check-circle mr-1"></i> 已完成報到
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-slate-400 font-bold mb-2 line-through">入場 QR Code</p>
+                                        <img src="${qrUrl}" class="mx-auto border p-1 rounded opacity-20 grayscale" alt="QR Code">
+                                        <p class="text-xs text-slate-400 mt-2">此 QR Code 已失效</p>
+                                    </div>
+                                `;
+                            } else {
+                                // Normal State
+                                qrBlock = `
+                                    <div class="mt-4 text-center border-t pt-4">
+                                        <p class="text-sm text-green-600 font-bold mb-2">已核准！入場 QR Code:</p>
+                                        <img src="${qrUrl}" class="mx-auto border p-1 rounded shadow-sm hover:scale-105 transition-transform" alt="QR Code">
+                                        <p class="text-xs text-slate-400 mt-2">請於報到時出示此 QR Code</p>
+                                    </div>
+                                `;
+                            }
+                        } else if (r.qr_code_data && !showQr) {
+                            qrBlock = `
+                                 <div class="mt-4 text-center border-t pt-4">
+                                     <p class="text-sm text-slate-400 font-medium mb-2">入場 QR Code (尚未開放顯示)</p>
+                                 </div>
+                             `;
+                        }
+
+                        let statusColor = 'text-yellow-600';
+                        if (r.status === 'Approved') statusColor = 'text-green-600';
+                        if (r.status === 'Rejected') statusColor = 'text-red-600';
+
+                        return `
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                                <h3 class="font-bold text-xl text-slate-800 mb-1">${r.event_name || '未知活動'}</h3>
+                                <div class="flex items-center text-sm text-slate-500 mb-4">
+                                    <i class="fas fa-calendar-alt mr-2"></i> ${new Date(r.event_date).toLocaleDateString()} 
+                                    <span class="mx-2">|</span>
+                                    <i class="fas fa-map-marker-alt mr-2"></i> ${r.event_location}
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl mb-2">
+                                    <div>
+                                        <span class="block text-xs text-slate-400 uppercase font-bold">報名狀態</span>
+                                        <span class="font-bold ${statusColor}">${r.status_tw || r.status}</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xs text-slate-400 uppercase font-bold">付款狀態</span>
+                                        <span class="font-bold text-slate-700">${r.payment_status}</span>
+                                    </div>
+                                </div>
+                                ${qrBlock}
+                            </div>
+                         `;
+                    }).join('');
+                } else {
+                    resDiv.innerHTML = '<p class="text-center text-slate-500 py-8">查無相關報名資料，請確認輸入資訊是否正確。</p>';
+                }
+            } catch (e) {
+                console.error(e);
+                resDiv.innerHTML = '<p class="text-center text-red-500">查詢發生錯誤，請稍後再試。</p>';
+            }
+        });
+
+        // --- Event Rendering ---
+        const eventsContainer = document.getElementById('view-events'); // Start with this hidden or empty, filled by JS
+
+        async function fetchEvents() {
+            document.getElementById('loading').classList.remove('hidden');
+            try {
+                const response = await fetch(`${API_URL}?action=getEvents`);
+                const result = await response.json();
+                if (result.status === 'success') {
+                    window.allEvents = result.data;
+                    renderEvents(result.data.filter(e => e.status !== 'Draft')); // Show only published
+                    document.getElementById('view-events').classList.remove('hidden');
+                } else {
+                    document.getElementById('view-events').innerHTML = '<p class="text-center text-slate-500 col-span-full">無法載入活動 (API Error)</p>';
+                    document.getElementById('view-events').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                eventsContainer.innerHTML = '<p class="text-center text-red-500 col-span-full">無法載入活動，請稍後再試。</p>';
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+                if (!document.getElementById('view-details').classList.contains('hidden') || !document.getElementById('view-register').classList.contains('hidden') || !document.getElementById('view-check').classList.contains('hidden')) {
+                    // do nothing if on other page
+                } else {
+                    showSection('events');
+                }
+            }
+        }
+
+        function renderEvents(events) {
+            eventsContainer.innerHTML = events.map((event, index) => `
+                <div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden card-hover flex flex-col h-full cursor-pointer group" 
+                     onclick="showEventDetails('${event.event_id}')"
+                     data-aos="fade-up" data-aos-delay="${index * 100}">
+                    <div class="h-4 bg-gradient-to-r from-blue-500 to-indigo-600 group-hover:h-6 transition-all duration-300"></div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-2xl font-bold text-slate-800 tracking-tight leading-tight mb-2 group-hover:text-blue-600 transition-colors">${event.name}</h3>
+                                <div class="flex items-center text-slate-500 text-sm font-medium">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    ${new Date(event.date).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full uppercase tracking-wide">
+                                $${event.price}
+                            </span>
+                        </div>
+                        
+                        <p class="text-slate-500 text-base mb-6 line-clamp-3 leading-relaxed flex-1">${event.description || '暫無描述'}</p>
+                        
+                        <div class="pt-6 border-t border-slate-50 mt-auto">
+                            <div class="flex items-center text-slate-400 text-sm mb-4">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                ${event.location}
+                            </div>
+                            <button class="w-full bg-slate-50 text-slate-600 py-3 rounded-xl font-bold transition-colors group-hover:bg-blue-600 group-hover:text-white">
+                                查看詳情 View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Event Details & Registration ---
+        let selectedEvent = null;
+
+        function showEventDetails(eventId) {
+            selectedEvent = window.allEvents.find(e => e.event_id === eventId);
+            if (!selectedEvent) return;
+
+            document.getElementById('detail-name').innerText = selectedEvent.name;
+            document.getElementById('detail-date').innerText = new Date(selectedEvent.date).toLocaleDateString();
+            document.getElementById('detail-loc').innerText = selectedEvent.location;
+            document.getElementById('detail-price').innerText = `$${selectedEvent.price}`;
+            document.getElementById('detail-desc').innerText = selectedEvent.description || '暫無描述';
+
+            // Check status
+            const btn = document.getElementById('btn-go-register');
+            if (selectedEvent.status !== 'Open') {
+                btn.disabled = true;
+                btn.innerText = "報名已截止 Registration Closed";
+                btn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                btn.classList.remove('bg-slate-900', 'hover:bg-black', 'shadow-lg');
+            } else {
+                btn.disabled = false;
+                btn.innerText = "立即報名 Join Event";
+                btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                btn.classList.add('bg-slate-900', 'hover:bg-black', 'shadow-lg');
+            }
+
+            showSection('details');
+        }
+
+        function showRegisterForm() {
+            if (!selectedEvent) return;
+            document.getElementById('event-id').value = selectedEvent.event_id;
+            document.getElementById('reg-form-subtitle').innerText = `正在報名: ${selectedEvent.name}`;
+            renderDynamicFields(selectedEvent);
+            showSection('register');
+        }
+
+        function renderDynamicFields(event) {
+            console.log("Rendering Dynamic Fields for:", event.name, "Config:", event.form_config);
+            const container = document.getElementById('dynamic-fields-container');
+            container.innerHTML = '';
+            // Reset standard fields
+            document.getElementById('reg-name').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-phone').value = '';
+
+            if (event.form_config) {
+                try {
+                    const fields = typeof event.form_config === 'string' ? JSON.parse(event.form_config) : event.form_config;
+
+                    if (fields && fields.length > 0) {
+                        fields.forEach((field, index) => {
+                            const div = document.createElement('div');
+                            div.className = "space-y-1 animate__animated animate__fadeIn";
+                            div.style.animationDelay = `${index * 50}ms`;
+
+                            const label = document.createElement('label');
+                            label.className = "text-xs font-bold text-slate-400 uppercase";
+                            label.innerHTML = `${field.label} ${field.required ? '<span class="text-red-500">*</span>' : ''}`;
+
+                            let input;
+
+                            if (field.type === 'textarea') {
+                                input = document.createElement('textarea');
+                                input.rows = 3;
+                            } else if (field.type === 'select') {
+                                input = document.createElement('select');
+                                // Add default option
+                                const defaultOpt = document.createElement('option');
+                                defaultOpt.value = "";
+                                defaultOpt.innerText = "請選擇...";
+                                input.appendChild(defaultOpt);
+
+                                if (field.options) {
+                                    const opts = field.options.split(',');
+                                    opts.forEach(opt => {
+                                        const o = document.createElement('option');
+                                        o.value = opt.trim();
+                                        o.innerText = opt.trim();
+                                        input.appendChild(o);
+                                    });
+                                }
+                            } else {
+                                input = document.createElement('input');
+                                let type = 'text';
+                                if (field.type === 'date') type = 'date';
+                                if (field.type === 'email') type = 'email';
+                                input.type = type;
+                            }
+
+                            input.className = "w-full p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none font-medium text-slate-700 dynamic-field";
+                            input.dataset.label = field.label;
+                            if (field.required) input.required = true;
+                            if (field.type !== 'select' && field.type !== 'date') input.placeholder = field.label;
+
+                            div.appendChild(label);
+                            div.appendChild(input);
+                            container.appendChild(div);
+                        });
+                    }
+                } catch (e) {
+                    console.error("Error parsing form config", e);
+                }
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.querySelector('#registration-form button[type="submit"]'); // Corrected selector for submit button
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = '處理中...';
+
+            // Collect Dynamic Data
+            let dynamicData = {};
+            const container = document.getElementById('dynamic-fields-container');
+            const inputs = container.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                if (input.dataset.label) {
+                    dynamicData[input.dataset.label] = input.value;
+                }
+            });
+
+            const payload = {
+                action: 'register',
+                eventId: document.getElementById('event-id').value,
+                name: document.getElementById('reg-name').value,
+                email: document.getElementById('reg-email').value,
+                phone: document.getElementById('reg-phone').value,
+                dynamicData: dynamicData
+            };
+
+            try {
+                // To avoid CORS preflight issues with simple requests, we use text/plain or strict content-type handling in GAS.
+                // However, fetch with JSON normally works if GAS is deployed correctly. 
+                // We use no-cors mode if strictly needed, but then we can't read response.
+                // Standard fetch to GAS Web App usually follows redirects.
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                    // headers: { "Content-Type": "text/plain;charset=utf-8" } // Helper to avoid rigorous CORS sometimes
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showSection('events'); // Return to events list
+                    showNotification('報名成功！請等待審核通知。');
+                } else {
+                    alert('報名失敗: ' + result.message);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('發生錯誤，請檢查網路連線。');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        });
+
+        function showNotification(msg) {
+            notif.innerText = msg;
+            notif.classList.remove('hidden');
+            setTimeout(() => {
+                notif.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+
+</html>
