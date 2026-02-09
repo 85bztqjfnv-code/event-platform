@@ -7,6 +7,13 @@
     <title>SEED EVENT+ | Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="config.js" defer></script>
+    <script>
+        window.onerror = function (msg, url, line) {
+            console.error("系統錯誤 (Error): " + msg + "\n" + url + ":" + line);
+            // alert("系統錯誤 (Error): " + msg + "\n" + url + ":" + line); // Suppress alert
+            return false;
+        };
+    </script>
     <!-- QR Code Scanner Library -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <!-- Animations -->
@@ -47,6 +54,14 @@
 </head>
 
 <body class="bg-gray-100 font-sans h-screen flex flex-col">
+    <!-- Global Loading Overlay -->
+    <div id="main-loading-overlay"
+        class="fixed inset-0 bg-slate-900 bg-opacity-75 flex items-center justify-center z-[100] hidden">
+        <div class="bg-white p-8 rounded-2xl flex flex-col items-center animate__animated animate__fadeIn">
+            <i class="fas fa-circle-notch fa-spin text-4xl text-blue-600 mb-4"></i>
+            <h3 class="text-lg font-bold text-slate-700">載入中... Please wait</h3>
+        </div>
+    </div>
 
     <!-- Login Screen -->
     <div id="login-screen"
@@ -64,6 +79,7 @@
                     class="w-full bg-blue-600 text-white p-3 rounded font-bold hover:bg-blue-700 transition">登入</button>
             </form>
             <p class="mt-4 text-xs text-center text-gray-400">預設: admin / admin123</p>
+            <p class="mt-2 text-xs text-center text-slate-300 font-mono opacity-50">v1.2.0</p>
         </div>
     </div>
 
@@ -94,7 +110,7 @@
                 <button onclick="switchTab('create-event')" id="tab-create-event"
                     class="tab-btn py-4 text-sm font-medium text-gray-400 hover:text-slate-800">建立活動</button>
                 <button onclick="switchTab('users')" id="tab-users"
-                    class="tab-btn py-4 text-sm font-medium text-gray-400 hover:text-slate-800 hidden">帳號 Users</button>
+                    class="tab-btn py-4 text-sm font-medium text-gray-400 hover:text-slate-800">帳號 Users</button>
                 <button onclick="switchTab('scanner')" id="tab-scanner"
                     class="tab-btn py-4 text-sm font-medium text-gray-400 hover:text-slate-800">QR 掃描</button>
             </div>
@@ -332,9 +348,27 @@
 
             <!-- Scanner View -->
             <div id="view-scanner" class="max-w-md mx-auto hidden animate__animated animate__fadeIn">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center">
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center relative overflow-hidden">
                     <h3 class="text-xl font-bold mb-6 text-slate-800">QR Code 掃描器</h3>
-                    <div id="reader" class="mx-auto border-2 border-slate-100 rounded-lg overflow-hidden mb-6"></div>
+
+                    <div id="main-scanner-overlay"
+                        class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 z-20">
+                        <i class="fas fa-camera text-slate-400 text-5xl mb-4"></i>
+                        <button onclick="startScanner()"
+                            class="bg-blue-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:bg-blue-700 transition transform hover:scale-105 active:scale-95 flex items-center">
+                            <i class="fas fa-power-off mr-2"></i> 啟動相機
+                        </button>
+                    </div>
+
+                    <button onclick="stopScanner()" id="btn-stop-main-scanner"
+                        class="absolute top-4 right-4 bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs hidden z-30 hover:bg-red-200">
+                        關閉
+                    </button>
+
+                    <div id="reader"
+                        class="mx-auto border-2 border-slate-100 rounded-lg overflow-hidden mb-6 min-h-[300px] bg-black">
+                    </div>
                     <p id="scan-result" class="text-sm font-medium text-slate-500 min-h-[20px]"></p>
                 </div>
             </div>
@@ -410,7 +444,7 @@
 
                 <!-- Info Tab -->
                 <div id="mview-info">
-                    <form id="edit-event-form" class="space-y-4 max-w-lg mx-auto bg-white p-6 rounded shadow">
+                    <form id="edit-event-form" class="space-y-4 max-w-7xl mx-auto bg-white p-6 rounded shadow">
                         <input type="hidden" id="edit-evt-id">
                         <h4 class="font-bold text-gray-700 text-lg mb-4">編輯活動資訊</h4>
                         <div>
@@ -483,75 +517,85 @@
                     <div id="event-registrations-section">
                         <div class="overflow-x-auto rounded-lg border border-slate-100">
                             <table class="min-w-full divide-y divide-slate-100" id="registrations-table">
-                                <!-- Dynamic Header injected here -->
-                                </tr>
+                                <thead class="bg-slate-50" id="registrations-table-head">
+                                    <!-- Dynamic Header injected here -->
                                 </thead>
-                                <tbody id="registrations-table-body" class="bg-white divide-y divide-slate-100"></tbody>
+                                <tbody id="registrations-list-body" class="bg-white divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Check-in Console Tab (New) -->
-                <div id="mview-checkin" class="hidden h-full flex flex-col">
-                    <!-- Stats Dashboard (Live) -->
-                    <div class="grid grid-cols-4 gap-4 mb-6">
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                            <div class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">總報名</div>
-                            <div class="text-3xl font-black text-slate-800" id="console-total">-</div>
+            <!-- Check-in Console Tab (New) -->
+            <div id="mview-checkin" class="hidden h-full flex flex-col">
+                <!-- Stats Dashboard (Live) -->
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-xs text-slate-500 uppercase font-bold tracking-wider mb-1">總報名</div>
+                        <div class="text-3xl font-black text-slate-800" id="console-total">-</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-green-100 bg-green-50 shadow-sm">
+                        <div class="text-xs text-green-600 uppercase font-bold tracking-wider mb-1">已報到</div>
+                        <div class="text-3xl font-black text-green-600" id="console-checked-in">-</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-orange-100 bg-orange-50 shadow-sm">
+                        <div class="text-xs text-orange-600 uppercase font-bold tracking-wider mb-1">未報到</div>
+                        <div class="text-3xl font-black text-orange-600" id="console-unchecked">-</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-blue-100 bg-blue-50 shadow-sm">
+                        <div class="text-xs text-blue-600 uppercase font-bold tracking-wider mb-1">報到率</div>
+                        <div class="text-3xl font-black text-blue-600" id="console-rate">0%</div>
+                    </div>
+                </div>
+
+                <!-- Scanner & Manual Check-in Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
+                    <!-- Left: Scanner -->
+                    <div
+                        class="bg-black rounded-2xl overflow-hidden relative shadow-lg flex flex-col items-center justify-center p-4 min-h-[400px]">
+
+                        <!-- Manual Start Overlay -->
+                        <div id="scanner-blocked-overlay"
+                            class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-20">
+                            <i class="fas fa-camera text-slate-700 text-6xl mb-4"></i>
+                            <button onclick="startConsoleScanner()"
+                                class="bg-blue-600 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:bg-blue-700 transition transform hover:scale-105 active:scale-95 flex items-center">
+                                <i class="fas fa-power-off mr-2"></i> 啟動掃描鏡頭
+                            </button>
+                            <p class="text-slate-500 text-xs mt-4">請允許瀏覽器存取相機權限</p>
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-green-100 bg-green-50 shadow-sm">
-                            <div class="text-xs text-green-600 uppercase font-bold tracking-wider mb-1">已報到</div>
-                            <div class="text-3xl font-black text-green-600" id="console-checked-in">-</div>
+
+                        <button onclick="stopConsoleScanner()" id="btn-stop-scanner"
+                            class="absolute top-4 right-4 bg-red-600/80 text-white px-3 py-1.5 rounded-full text-xs backdrop-blur-md hidden z-30 hover:bg-red-700 transition">
+                            <i class="fas fa-stop mr-1"></i> 關閉鏡頭
+                        </button>
+
+                        <div id="console-reader" class="w-full h-full max-h-[500px] bg-black"></div>
+                        <div
+                            class="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs backdrop-blur-md pointer-events-none">
+                            📷 鏡頭運作中
                         </div>
-                        <div class="bg-white p-4 rounded-xl border border-orange-100 bg-orange-50 shadow-sm">
-                            <div class="text-xs text-orange-600 uppercase font-bold tracking-wider mb-1">未報到</div>
-                            <div class="text-3xl font-black text-orange-600" id="console-unchecked">-</div>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl border border-blue-100 bg-blue-50 shadow-sm">
-                            <div class="text-xs text-blue-600 uppercase font-bold tracking-wider mb-1">報到率</div>
-                            <div class="text-3xl font-black text-blue-600" id="console-rate">0%</div>
+                        <!-- Scanner Status Overlay -->
+                        <div id="console-scan-status"
+                            class="absolute inset-0 flex items-center justify-center bg-black/80 hidden z-10">
+                            <span class="text-white font-medium animate-pulse">處理中...</span>
                         </div>
                     </div>
 
-                    <!-- Scanner & Manual Check-in Area -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-0">
-                        <!-- Left: Scanner -->
-                        <div
-                            class="bg-black rounded-2xl overflow-hidden relative shadow-lg flex flex-col items-center justify-center p-4">
-                            <div id="console-reader" class="w-full h-full max-h-[500px] bg-black"></div>
-                            <div
-                                class="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-xs backdrop-blur-md">
-                                📷 鏡頭運作中
-                            </div>
-                            <!-- Scanner Status Overlay -->
-                            <div id="console-scan-status"
-                                class="absolute inset-0 flex items-center justify-center bg-black/80 hidden z-10">
-                                <span class="text-white font-medium animate-pulse">處理中...</span>
-                            </div>
+                    <!-- Right: Recent Activity / Manual -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                            <h4 class="font-bold text-slate-700">最近動態</h4>
+                            <span class="text-xs text-slate-400">實時更新</span>
                         </div>
-
-                        <!-- Right: Recent Activity / Manual -->
-                        <div
-                            class="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
-                            <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                                <h4 class="font-bold text-slate-700">最近動態</h4>
-                                <span class="text-xs text-slate-400">實時更新</span>
-                            </div>
-                            <div id="console-activity-log" class="flex-1 overflow-y-auto p-4 space-y-3">
-                                <div class="text-center text-slate-400 py-10 text-sm">暫無報到紀錄</div>
-                            </div>
+                        <div id="console-activity-log" class="flex-1 overflow-y-auto p-4 space-y-3">
+                            <div class="text-center text-slate-400 py-10 text-sm">暫無報到紀錄</div>
                         </div>
                     </div>
                 </div>
-                </thead>
-                <tbody id="registrations-list-body" class="bg-white divide-y divide-gray-100">
-                    <!-- Dynamic Rows -->
-                </tbody>
-                </table>
             </div>
         </div>
-    </div>
 
     </div>
     </div>
@@ -593,24 +637,54 @@
             }
         });
 
-        function enterDashboard() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('user-name-display').innerText = currentUser.name;
-            document.getElementById('user-role-display').innerText = currentUser.role;
+        async function enterDashboard() {
+            try {
+                // Show Loading
+                document.getElementById('main-loading-overlay').classList.remove('hidden');
 
-            if (currentUser.role !== 'System Admin') {
-                document.getElementById('tab-users').classList.add('hidden');
+                if (!currentUser) throw new Error("User session invalid");
+
+                document.getElementById('login-screen').classList.add('hidden');
+                const dashboard = document.getElementById('dashboard');
+                dashboard.classList.remove('hidden');
+
+                document.getElementById('user-name-display').innerText = currentUser.name || 'User';
+                document.getElementById('user-role-display').innerText = currentUser.role || 'Staff';
+
+                console.log("Current User Role Raw:", currentUser.role);
+                // alert("Debug Role: " + currentUser.role); // Debugging removed
+
+                // explicit role check
+                // FORCE SHOW for debugging - logic was flaky
+                const userTab = document.getElementById('tab-users');
+                userTab.classList.remove('hidden');
+
+                /*
+                if (String(currentUser.role).trim() === 'System Admin') {
+                    userTab.classList.remove('hidden');
+                } else {
+                    if (String(currentUser.role).includes('Admin')) {
+                         userTab.classList.remove('hidden');
+                    } else {
+                         // userTab.classList.add('hidden'); // Disabled hiding for now
+                    }
+                }
+                */
+
+                // Load Overview Stats first
+                await loadOverview();
+
+                // Auto-repair headers in background
+                fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) })
+                    .catch(console.error);
+
+            } catch (e) {
+                console.error(e);
+                alert("載入 Dashboard 失敗: " + e.message);
+            } finally {
+                // Hide Loading
+                document.getElementById('main-loading-overlay').classList.add('hidden');
             }
-
-            // Load Overview Stats first
-            loadOverview();
-
-            // Auto-repair headers to avoid bugs
-            fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) })
-                .then(r => r.json())
-                .then(json => console.log("DB Repair:", json))
-                .catch(console.error);
         }
 
         function logout() {
@@ -630,7 +704,10 @@
 
             if (tab === 'overview') loadOverview();
             if (tab === 'events') loadEvents();
-            if (tab === 'scanner') startScanner();
+            if (tab === 'scanner') {
+                // startScanner(); // Auto-start removed
+                // Show default state is handled by HTML overlay
+            }
             else stopScanner();
         }
 
@@ -746,8 +823,10 @@
         let currentEventRegistrations = []; // Store for CSV export
         let allEventsData = []; // Populated by loadEvents
 
-        async function openEventManager(eventId) {
+        // Expose to window to ensure button onclick works
+        window.openEventManager = async function (eventId) {
             currentEditingEventId = eventId;
+
             const modal = document.getElementById('event-manager-modal');
             console.log("Opening event manager for ID:", eventId);
             const eventData = allEventsData.find(e => String(e.event_id) === String(eventId)); // Ensure type match
@@ -792,6 +871,7 @@
         function closeEventManager() {
             document.getElementById('event-manager-modal').classList.add('hidden');
             currentEditingEventId = null;
+            stopConsoleScanner(); // Ensure console scanner is stopped when modal closes
         }
 
         function switchModalTab(tab) {
@@ -1294,13 +1374,14 @@
 
             // Logic Hooks
             if (tab === 'regs') {
-                loadModalRegistrations();
+                // loadModalRegistrations(); // This function is replaced by loadEventRegistrations
             }
 
             // Console Scanner Hook
             if (tab === 'checkin') {
                 loadOverview(); // Update stats
-                startConsoleScanner(); // Start Scanner
+                updateConsoleStats(); // UPDATE STATS
+                // startConsoleScanner(); // Auto-start removed
             } else {
                 stopConsoleScanner(); // Stop Scanner to save resources
             }
@@ -1340,6 +1421,7 @@
 
         // --- Scanner Logic (Refactored for Console) ---
         let html5QrcodeScanner;
+        let mainHtml5QrcodeScanner; // For the main scanner tab
 
         function startConsoleScanner() {
             if (html5QrcodeScanner) {
@@ -1349,6 +1431,12 @@
 
             const readerId = "console-reader";
             if (!document.getElementById(readerId)) return;
+
+            if (typeof Html5Qrcode === 'undefined') {
+                console.warn("Html5Qrcode library not loaded. Scanner disabled.");
+                document.getElementById(readerId).innerHTML = '<div class="text-white text-center p-4">無法載入掃描元件 (Library Missing)</div>';
+                return;
+            }
 
             html5QrcodeScanner = new Html5Qrcode(readerId);
 
@@ -1391,6 +1479,10 @@
                     document.getElementById('console-scan-status').classList.add('hidden');
                     setTimeout(() => { window.isScanning = false; }, 2000); // Cooldown
                 }
+            }).then(() => {
+                // Started
+                document.getElementById('scanner-blocked-overlay').classList.add('hidden');
+                document.getElementById('btn-stop-scanner').classList.remove('hidden');
             }).catch(err => {
                 console.error("Scanner Error", err);
                 document.getElementById(readerId).innerHTML = `<div class="text-white text-center p-4">無法啟動鏡頭<br>${err}</div>`;
@@ -1402,7 +1494,51 @@
                 html5QrcodeScanner.stop().then(() => {
                     html5QrcodeScanner.clear();
                     html5QrcodeScanner = null;
+                    document.getElementById('scanner-blocked-overlay').classList.remove('hidden');
+                    document.getElementById('btn-stop-scanner').classList.add('hidden');
                 }).catch(err => console.error("Failed to stop scanner", err));
+            }
+        }
+
+        function startScanner() {
+            if (mainHtml5QrcodeScanner) {
+                return;
+            }
+
+            const readerId = "reader";
+            if (!document.getElementById(readerId)) return;
+
+            if (typeof Html5Qrcode === 'undefined') {
+                console.warn("Html5Qrcode library not loaded. Scanner disabled.");
+                document.getElementById(readerId).innerHTML = '<div class="text-white text-center p-4">無法載入掃描元件 (Library Missing)</div>';
+                return;
+            }
+
+            mainHtml5QrcodeScanner = new Html5Qrcode(readerId);
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            mainHtml5QrcodeScanner.start({ facingMode: "environment" }, config, async (decodedText) => {
+                // Success
+                document.getElementById('scan-result').innerText = `掃描結果: ${decodedText}`;
+                // You can add further processing here, e.g., API call for check-in
+            }).then(() => {
+                document.getElementById('main-scanner-overlay').classList.add('hidden');
+                document.getElementById('btn-stop-main-scanner').classList.remove('hidden');
+            }).catch(err => {
+                console.error("Main Scanner Error", err);
+                document.getElementById(readerId).innerHTML = `<div class="text-white text-center p-4">無法啟動鏡頭<br>${err}</div>`;
+            });
+        }
+
+        function stopScanner() {
+            if (mainHtml5QrcodeScanner) {
+                mainHtml5QrcodeScanner.stop().then(() => {
+                    mainHtml5QrcodeScanner.clear();
+                    mainHtml5QrcodeScanner = null;
+                    document.getElementById('main-scanner-overlay').classList.remove('hidden');
+                    document.getElementById('btn-stop-main-scanner').classList.add('hidden');
+                    document.getElementById('scan-result').innerText = '';
+                }).catch(err => console.error("Failed to stop main scanner", err));
             }
         }
 
@@ -1508,13 +1644,8 @@
             if (document.getElementById('stat-rate')) document.getElementById('stat-rate').innerText = `${rate}%`;
         }
 
-        function stopScanner() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.stop().then(() => {
-                    html5QrcodeScanner.clear();
-                    html5QrcodeScanner = null;
-                }).catch(err => console.error("Failed to stop scanner", err));
-            }
+        function loadModalRegistrations() {
+            refreshCurrentEventData();
         }
     </script>
 </body>
