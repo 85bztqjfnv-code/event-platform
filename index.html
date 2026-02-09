@@ -177,12 +177,12 @@
 
         <!-- 3. Registration Form View (New) -->
         <div id="view-register" class="hidden max-w-2xl mx-auto animate__animated animate__fadeInUp">
-            <button onclick="showSection('details')"
+            <button onclick="showSection('events')"
                 class="mb-6 flex items-center text-slate-500 hover:text-blue-600 transition-colors">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
-                返回活動詳情
+                返回列表
             </button>
             <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
                 <h2 class="text-3xl font-bold text-slate-800 mb-2">填寫報名資訊</h2>
@@ -458,19 +458,11 @@
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                                 ${event.location}
                             </div>
-                            <div class="flex justify-between items-center">
-                                <button onclick="showEventDetails('${event.event_id}')"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
-                                    快速瀏覽 Quick View
+                            <div class="flex justify-center">
+                                <button onclick="showRegisterFormByEventId('${event.event_id}')"
+                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
+                                    立即報名 Join Now
                                 </button>
-                                <a href="index.html?event=${event.event_id}" onclick="event.stopPropagation();"
-                                    class="text-blue-600 hover:text-blue-800 font-bold text-sm flex items-center transition-colors">
-                                    專頁 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -478,41 +470,23 @@
             `).join('');
         }
 
-        // --- Event Details & Registration ---
-        let selectedEvent = null;
-
-        function showEventDetails(eventId) {
+        function showRegisterFormByEventId(eventId) {
             selectedEvent = window.allEvents.find(e => e.event_id === eventId);
             if (!selectedEvent) return;
 
-            document.getElementById('detail-name').innerText = selectedEvent.name;
-            document.getElementById('detail-date').innerText = new Date(selectedEvent.date).toLocaleDateString();
-            document.getElementById('detail-loc').innerText = selectedEvent.location;
-            document.getElementById('detail-price').innerText = `$${selectedEvent.price}`;
-            document.getElementById('detail-desc').innerText = selectedEvent.description || '暫無描述';
-
-            // Update SEO meta tags
-            updateMetaTags(selectedEvent);
-
-            // Check status
-            const btn = document.getElementById('btn-go-register');
             if (selectedEvent.status !== 'Open') {
-                btn.disabled = true;
-                btn.innerText = "報名已截止 Registration Closed";
-                btn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                btn.classList.remove('bg-slate-900', 'hover:bg-black', 'shadow-lg');
-            } else {
-                btn.disabled = false;
-                btn.innerText = "立即報名 Join Event";
-                btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                btn.classList.add('bg-slate-900', 'hover:bg-black', 'shadow-lg');
+                alert("此活動報名已截止");
+                return;
             }
 
-            showSection('details');
+            document.getElementById('event-id').value = selectedEvent.event_id;
+            document.getElementById('reg-form-subtitle').innerText = `正在報名: ${selectedEvent.name}`;
+            renderDynamicFields(selectedEvent);
+            showSection('register');
         }
 
-        // Load event details directly from URL parameter
-        async function loadEventDetails(eventId) {
+        // Load event directly from URL parameter
+        async function loadEventAndShowForm(eventId) {
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('view-events').classList.add('hidden');
             document.getElementById('main-header').classList.add('hidden');
@@ -528,7 +502,7 @@
                     if (event) {
                         selectedEvent = event;
                         document.getElementById('loading').classList.add('hidden');
-                        showEventDetails(eventId);
+                        showRegisterFormByEventId(eventId);
                     } else {
                         alert('找不到此活動');
                         window.location.href = 'index.html';
@@ -756,8 +730,8 @@
             const eventId = urlParams.get('event') || urlParams.get('id');
 
             if (eventId) {
-                // Load single event details
-                loadEventDetails(eventId);
+                // Load single event and go straight to form
+                loadEventAndShowForm(eventId);
             } else {
                 // Load event list as normal
                 init();

@@ -61,6 +61,26 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
         }
 
+        /* Global Table Styles (Moved out of mobile-only query) */
+        #registrations-table {
+            font-size: 0.875rem;
+        }
+
+        #registrations-table th,
+        #registrations-table td {
+            padding: 0.75rem 1rem !important;
+            vertical-align: middle;
+        }
+
+        #registrations-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            /* Increased to ensure it stays above data but below modals */
+            background-color: #f8fafc;
+            box-shadow: inset 0 -1px 0 #edf2f7;
+        }
+
         /* Phase 16: Mobile Optimization */
         @media (max-width: 768px) {
 
@@ -78,16 +98,6 @@
             #batch-toolbar button {
                 width: 100%;
                 justify-content: center;
-            }
-
-            /* Table Responsive */
-            #registrations-table {
-                font-size: 0.875rem;
-            }
-
-            #registrations-table th,
-            #registrations-table td {
-                padding: 0.5rem !important;
             }
 
             /* Quick Filter Buttons */
@@ -174,7 +184,7 @@
     <!-- Admin Dashboard -->
     <div id="dashboard" class="flex-1 flex flex-col hidden">
         <!-- Top Navigation -->
-        <header class="bg-white/90 backdrop-blur shadow-sm z-10 sticky top-0 animate__animated animate__slideInDown">
+        <header class="bg-white/90 backdrop-blur shadow-sm z-30 sticky top-0 animate__animated animate__slideInDown">
             <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                 <h1 class="text-2xl font-bold text-slate-800 tracking-tight">SEED EVENT+ <span id="user-role-display"
                         class="text-blue-600 text-sm bg-blue-50 px-2 py-1 rounded-full ml-2 font-normal align-middle"></span>
@@ -425,7 +435,7 @@
                         </div>
                         <div class="md:col-span-2 space-y-1">
                             <label class="text-xs font-bold text-slate-400 uppercase">活動圖片 (Image URL)</label>
-                            <input type="url" id="evt-image-url" placeholder="https://example.com/banner.jpg"
+                            <input type="text" id="evt-image-url" placeholder="https://example.com/banner.jpg"
                                 class="w-full p-3 bg-slate-50 border-0 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all">
                         </div>
                         <div class="md:col-span-2 space-y-1">
@@ -681,13 +691,12 @@
                 </button>
                 <button onclick="switchModalTab('landing')" id="mtab-landing"
                     class="py-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors flex items-center">
-                    <i class="fas fa-globe mr-2"></i>
-                    <span>Landing Page</span>
+                    <i class="fas fa-rocket mr-2"></i> 推廣頁面
                 </button>
             </div>
 
             <!-- Modal Content -->
-            <div class="flex-1 overflow-auto p-6 bg-gray-50">
+            <div class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-gray-50 scroll-smooth">
 
                 <!-- Info Tab -->
                 <div id="mview-info">
@@ -712,7 +721,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">活動圖片 (Image URL)</label>
-                            <input type="url" id="edit-evt-image-url" class="w-full mt-1 p-2 border rounded">
+                            <input type="text" id="edit-evt-image-url" class="w-full mt-1 p-2 border rounded">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">描述 (HTML)</label>
@@ -722,6 +731,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700">狀態</label>
                             <select id="edit-evt-status" class="w-full mt-1 p-2 border rounded">
+                                <option value="Open">開啟報名 (Open)</option>
                                 <option value="Closed">停止報名 (Closed)</option>
                             </select>
                         </div>
@@ -742,9 +752,15 @@
                                 <span class="ms-3 text-sm font-medium text-gray-700">開放報到 (Check-in)</span>
                             </label>
                         </div>
-                        <div class="pt-4 flex justify-end">
+                        <div class="flex justify-between items-center pt-6 border-t">
+                            <button type="button" onclick="confirmDeleteEvent()"
+                                class="text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg text-sm font-bold border border-red-200 transition-colors">
+                                <i class="fas fa-trash-alt mr-2"></i> 刪除此活動
+                            </button>
                             <button type="submit"
-                                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">儲存變更</button>
+                                class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg transition-all active:scale-95">
+                                <i class="fas fa-save mr-2"></i> 儲存變更
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -942,53 +958,51 @@
                     </div>
                 </div>
 
-                <!-- Landing Page Tab -->
-                <div id="mview-landing" class="hidden space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
-                        <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center">
-                            <i class="fas fa-globe text-blue-600 mr-3"></i>
-                            活動專屬頁面
-                        </h3>
-
-                        <!-- Landing Page URL -->
-                        <div class="space-y-4 mb-8">
-                            <label class="block text-sm font-bold text-slate-700">活動連結</label>
-                            <div class="flex gap-3">
-                                <input type="text" id="landing-url-display" readonly
-                                    class="flex-1 p-3 border border-slate-200 rounded-lg bg-slate-50 font-mono text-sm text-slate-600"
-                                    value="載入中...">
-                                <button onclick="copyLandingUrl()"
-                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
-                                    <i class="fas fa-copy"></i>
-                                    複製
+                <!-- Landing Tab (Previously Orphaned) -->
+                <div id="mview-landing" class="hidden space-y-8 animate__animated animate__fadeIn">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-link text-blue-600"></i> 推廣網址與預覽
+                        </h4>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1 bg-slate-50 p-4 rounded-xl border border-slate-100 break-all font-mono text-sm text-slate-600"
+                                id="landing-url-display">
+                                ---
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="copyLandingURL()"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-sm hover:shadow-md active:scale-95">
+                                    <i class="fas fa-copy"></i> 複製連結
                                 </button>
                                 <button onclick="previewLandingPage()"
-                                    class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
-                                    <i class="fas fa-eye"></i>
-                                    預覽
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-sm hover:shadow-md active:scale-95">
+                                    <i class="fas fa-external-link-alt"></i> 預覽頁面
                                 </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- QR Code Section -->
-                        <div class="space-y-4">
-                            <label class="block text-sm font-bold text-slate-700">活動 QR Code</label>
-                            <div class="flex items-start gap-6">
-                                <div class="bg-white border-2 border-slate-200 rounded-xl p-4 shadow-sm">
-                                    <img id="landing-qr-image" src="" alt="QR Code" class="w-48 h-48">
+                    <!-- QR Code Section -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+                            <i class="fas fa-qrcode text-purple-600"></i> 活動 QR Code
+                        </h4>
+                        <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+                            <div class="bg-white border-4 border-slate-50 rounded-2xl p-6 shadow-md">
+                                <img id="landing-qr-image" src="" alt="QR Code"
+                                    class="w-56 h-56 transition-transform hover:scale-105 duration-300">
+                            </div>
+                            <div class="flex-1 space-y-4 text-center md:text-left">
+                                <div class="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                                    <p class="text-slate-700 text-sm leading-relaxed">
+                                        您可以將此 QR Code 置於海報、傳單或社群媒體上。
+                                        <br>報名者掃描後將直接進入活動專屬報名頁面。
+                                    </p>
                                 </div>
-                                <div class="flex-1 space-y-3">
-                                    <p class="text-sm text-slate-600">掃描此 QR Code 即可直接進入活動報名頁面</p>
-                                    <button onclick="downloadLandingQR()"
-                                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-bold transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
-                                        <i class="fas fa-download"></i>
-                                        下載 QR Code
-                                    </button>
-                                    <div class="text-xs text-slate-400 mt-2">
-                                        <i class="fas fa-info-circle mr-1"></i>
-                                        建議尺寸：500x500 像素
-                                    </div>
-                                </div>
+                                <button onclick="downloadLandingQR()"
+                                    class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95 transform hover:-translate-y-0.5">
+                                    <i class="fas fa-download"></i> 下載 QR Code (500x500)
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -996,6 +1010,9 @@
 
             </div>
         </div>
+
+    </div>
+    </div>
     </div>
 
     <script>
@@ -1003,7 +1020,7 @@
             if (window.API_URL) return window.API_URL;
             if (typeof API_URL !== 'undefined') return API_URL;
             // Fallback to the latest version as a safety measure
-            return "https://script.google.com/macros/s/AKfycbzAoHYzGYcofAwFuXTC7H99IlUNrP1fHX-vtSMKmW2E88T-osAu6ZVN2GF8K3cqFFDP/exec";
+            return "https://script.google.com/macros/s/AKfycbyF3Xd9HY1R71SdSse-mFDLkAXvV9bTicVJ_0We3p8woq7PrWo3JZ69tfvq6wtO7A5p/exec";
         }
 
         var API_URL = getApiUrl();
@@ -1115,7 +1132,7 @@
                 await loadOverview();
 
                 // Auto-repair headers in background
-                fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) })
+                fetch(getApiUrl(), { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) })
                     .catch(console.error);
 
                 playAudio('popup'); // Welcome sound
@@ -1160,8 +1177,8 @@
             // Simple approach: get all events and get all registrations (could be slow if huge data, but prototype OK)
             try {
                 const [resE, resR] = await Promise.all([
-                    fetch(`${API_URL}?action=getEvents&includeClosed=true`),
-                    fetch(`${API_URL}?action=getRegistrations`)
+                    fetch(`${getApiUrl()}?action=getEvents&includeClosed=true`),
+                    fetch(`${getApiUrl()}?action=getRegistrations`)
                 ]);
                 const jsonE = await resE.json();
                 const jsonR = await resR.json();
@@ -1189,6 +1206,13 @@
         }
 
         function setLoading(isLoading, btn = null, loadingText = "處理中...") {
+            // Robust check: if first arg is an element and second is boolean, they are swapped
+            if (isLoading && typeof isLoading === 'object' && isLoading.nodeType && typeof btn === 'boolean') {
+                const temp = isLoading;
+                isLoading = btn;
+                btn = temp;
+            }
+
             if (isLoading) {
                 if (btn) {
                     btn.dataset.originalText = btn.innerHTML;
@@ -1216,8 +1240,8 @@
             try {
                 // Fetch events and registrations in parallel
                 const [eventsRes, regsRes] = await Promise.all([
-                    fetch(`${API_URL}?action=getEvents&includeClosed=true`),
-                    fetch(`${API_URL}?action=getRegistrations`)
+                    fetch(`${getApiUrl()}?action=getEvents&includeClosed=true`),
+                    fetch(`${getApiUrl()}?action=getRegistrations`)
                 ]);
 
                 const eventsJson = await eventsRes.json();
@@ -1263,11 +1287,6 @@
                                         title="複製活動連結">
                                         <i class="fas fa-link"></i>
                                     </button>
-                                    <button onclick="previewEventPage('${e.event_id}')" 
-                                        class="text-slate-600 hover:text-purple-600 transition-colors p-2 hover:bg-purple-50 rounded-lg" 
-                                        title="預覽活動頁面">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
                                     <button onclick="openEventManager('${e.event_id}')" 
                                         class="bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 shadow-sm transition-all hover:shadow-md active:scale-95 flex items-center">
                                         <i class="fas fa-cog mr-1"></i> 管理
@@ -1288,7 +1307,7 @@
         document.getElementById('create-event-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button[type="submit"]');
-            setLoading(btn, true);
+            setLoading(true, btn);
 
             const payload = {
                 action: 'createEvent',
@@ -1304,16 +1323,31 @@
                 formConfig: customFields // Include custom fields
             };
 
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            try {
+                const response = await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify(payload) });
+                const result = await response.json();
 
-            e.target.reset();
-            customFields = []; // Reset custom fields
-            renderCustomFieldsList();
-            setLoading(btn, false);
+                if (result.status === 'success') {
+                    playAudio('success');
+                    showPopup('成功', '活動建立成功', 'success');
+                    e.target.reset();
+                    customFields = []; // Reset custom fields
+                    renderCustomFieldsList();
 
-            // Refech events and switch back
-            await loadEvents();
-            switchView('dashboard');
+                    // Refetch events and switch back
+                    await loadEvents();
+                    switchTab('events');
+                } else {
+                    playAudio('error');
+                    showPopup('失敗', result.message || '建立活動失敗', 'error');
+                }
+            } catch (error) {
+                console.error("Create event error:", error);
+                playAudio('error');
+                showPopup('錯誤', '連線到伺服器時發生錯誤', 'error');
+            } finally {
+                setLoading(false, btn);
+            }
 
             // Show toast instead of alert? keeping alert for now as requested
             // alert('活動建立成功');
@@ -1471,27 +1505,28 @@
                                 onchange="toggleSelectAll()" 
                                 class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer">
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">姓名 Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">電話 Phone</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">姓名 Name</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">Email</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">電話 Phone</th>
                 `;
 
                 // Add Dynamic Headers
                 customFields.forEach(field => {
-                    headerHTML += `<th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">${field.label}</th>`;
+                    headerHTML += `<th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">${field.label}</th>`;
                 });
 
                 // Status and Check-in Headers
                 headerHTML += `
-                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">狀態 Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">報到 Check-in</th>
-                        <th class="px-6 py-3 text-left text-xs font-bold text-slate-400 uppercase">操作 Actions</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">報名狀況 Status</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">繳費狀況 Payment</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">報到狀況 Check-in</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-slate-400 uppercase sticky top-0 bg-slate-50 z-20 shadow-sm">操作 Actions</th>
                     </tr>
                 `;
                 thead.innerHTML = headerHTML;
 
 
-                const response = await fetch(`${API_URL}?action=getRegistrations&eventId=${eventId}`);
+                const response = await fetch(`${getApiUrl()}?action=getRegistrations&eventId=${eventId}`);
                 const result = await response.json();
 
                 if (result.data) {
@@ -1605,7 +1640,7 @@
             };
 
             try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify(payload) });
                 showPopup('成功', '活動更新成功', 'success');
                 loadEvents();
             } catch (e) { showPopup('失敗', '更新失敗', 'error'); }
@@ -1621,7 +1656,7 @@
         //     body.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center">載入中...</td></tr>';
 
         //     try {
-        //         const res = await fetch(`${API_URL}?action=getRegistrations&eventId=${currentEventId}`);
+        //         const res = await fetch(`${getApiUrl()}?action=getRegistrations&eventId=${currentEventId}`);
         //         const json = await res.json();
 
         //         if (json.data) {
@@ -1689,7 +1724,7 @@
             if (!confirm(`確定要變更狀態為 ${status} ?`)) return;
             setLoading(true);
             try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'updateStatus', regId: id, status: status }) });
+                await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify({ action: 'updateStatus', regId: id, status: status }) });
                 showPopup('成功', `狀態已更新為 ${status}`, 'success');
                 // Reload registrations
                 const eventData = allEventsData.find(e => e.event_id === currentEditingEventId);
@@ -1705,7 +1740,7 @@
             if (!confirm(`確定已收款? 此操作將產生 QR Code`)) return;
             setLoading(true);
             try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'updatePayment', regId: id, paymentStatus: status }) });
+                await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify({ action: 'updatePayment', regId: id, paymentStatus: status }) });
                 showPopup('成功', `付款狀態已更新為 ${status}`, 'success');
                 // Reload registrations
                 const eventData = allEventsData.find(e => e.event_id === currentEditingEventId);
@@ -1857,7 +1892,7 @@
                     ...dynamicValues,
                     `"${row.status}"`,
                     `"${row.payment_status}"`,
-                    `"${row.check_in_status || 'Not Checked In'}"`
+                    `"${row.check_in_status || 'NotCheckedIn'}"`
                 ];
                 csvRows.push(values.join(','));
             }
@@ -1959,12 +1994,11 @@
 
             try {
                 const regIds = Array.from(selectedRegistrations);
-                const response = await fetch(API_URL, {
+                const response = await fetch(getApiUrl(), {
                     method: 'POST',
                     body: JSON.stringify({
-                        action: 'batchUpdateStatus',
-                        regIds: regIds,
-                        status: 'Approved'
+                        action: 'batchApprove',
+                        regIds: regIds
                     })
                 });
 
@@ -2005,12 +2039,11 @@
 
             try {
                 const regIds = Array.from(selectedRegistrations);
-                const response = await fetch(API_URL, {
+                const response = await fetch(getApiUrl(), {
                     method: 'POST',
                     body: JSON.stringify({
-                        action: 'batchUpdateStatus',
-                        regIds: regIds,
-                        status: 'Rejected'
+                        action: 'batchReject',
+                        regIds: regIds
                     })
                 });
 
@@ -2082,7 +2115,7 @@
                     ...dynamicValues,
                     `"${row.status}"`,
                     `"${row.payment_status}"`,
-                    `"${row.check_in_status || 'Not Checked In'}"`
+                    `"${row.check_in_status || 'NotCheckedIn'}"`
                 ];
                 csvRows.push(values.join(','));
             }
@@ -2115,9 +2148,9 @@
 
             // Check-in filter
             if (checkinFilter === 'checked') {
-                filtered = filtered.filter(reg => reg.check_in_status && reg.check_in_status !== 'Not Checked In');
+                filtered = filtered.filter(reg => reg.check_in_status === 'CheckedIn');
             } else if (checkinFilter === 'not-checked') {
-                filtered = filtered.filter(reg => !reg.check_in_status || reg.check_in_status === 'Not Checked In');
+                filtered = filtered.filter(reg => !reg.check_in_status || reg.check_in_status === 'NotCheckedIn');
             }
 
             // Search filter
@@ -2263,7 +2296,7 @@
 
             // Name cell
             const nameCell = document.createElement('td');
-            nameCell.className = 'px-4 py-3 font-medium text-slate-900';
+            nameCell.className = 'px-4 py-3 font-medium text-slate-900 border-b border-slate-50';
             nameCell.textContent = reg.participant_name;
             tr.appendChild(nameCell);
 
@@ -2287,31 +2320,36 @@
                 tr.appendChild(cell);
             });
 
-            // Status cell
+            // Registration Status cell
             const statusCell = document.createElement('td');
-            statusCell.className = 'px-4 py-3';
-            const statusBadge = getStatusBadge(reg.status);
-            statusCell.innerHTML = statusBadge;
+            statusCell.className = 'px-4 py-3 border-b border-slate-50';
+            statusCell.innerHTML = getStatusBadge(reg.status);
             tr.appendChild(statusCell);
+
+            // Payment Status cell
+            const paymentCell = document.createElement('td');
+            paymentCell.className = 'px-4 py-3 border-b border-slate-50';
+            paymentCell.innerHTML = getPaymentBadge(reg.payment_status);
+            tr.appendChild(paymentCell);
 
             // Check-in status cell
             const checkinCell = document.createElement('td');
-            checkinCell.className = 'px-4 py-3 text-sm';
-            if (reg.check_in_status && reg.check_in_status !== 'Not Checked In') {
+            checkinCell.className = 'px-4 py-3 text-sm border-b border-slate-50';
+            if (reg.check_in_status === 'CheckedIn') {
                 checkinCell.innerHTML = `
                     <div class="flex flex-col">
-                        <span class="text-green-600 font-medium">✓ 已報到</span>
-                        <span class="text-xs text-slate-400">${reg.check_in_time || ''}</span>
+                        <span class="text-green-600 font-medium whitespace-nowrap">✓ 已報到</span>
+                        <span class="text-xs text-slate-400 whitespace-nowrap">${reg.check_in_time || ''}</span>
                     </div>
                 `;
             } else {
-                checkinCell.innerHTML = '<span class="text-slate-400">○ 未報到</span>';
+                checkinCell.innerHTML = '<span class="text-slate-400 whitespace-nowrap">○ 未報到</span>';
             }
             tr.appendChild(checkinCell);
 
             // Actions cell
             const actionsCell = document.createElement('td');
-            actionsCell.className = 'px-4 py-3';
+            actionsCell.className = 'px-4 py-3 border-b border-slate-50';
             actionsCell.innerHTML = `
                 <div class="flex gap-2">
                     ${reg.status === 'Pending' ? `
@@ -2326,6 +2364,13 @@
                             <i class="fas fa-times"></i>
                         </button>
                     ` : ''}
+                    ${(reg.payment_status !== 'Paid') ? `
+                        <button onclick="updatePaymentStatus('${reg.reg_id}', 'Paid')" 
+                            class="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-xs font-medium transition-colors"
+                            title="註記已付款">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </button>
+                    ` : ''}
                 </div>
             `;
             tr.appendChild(actionsCell);
@@ -2335,11 +2380,19 @@
 
         function getStatusBadge(status) {
             const badges = {
-                'Pending': '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">⏳ 待審核</span>',
-                'Approved': '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">✅ 已核准</span>',
-                'Rejected': '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">❌ 已拒絕</span>'
+                'Pending': '<span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium whitespace-nowrap">⏳ 審核中</span>',
+                'Approved': '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium whitespace-nowrap">✅ 已核准</span>',
+                'Rejected': '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium whitespace-nowrap">❌ 已拒絕</span>'
             };
-            return badges[status] || status;
+            return badges[status] || `<span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium whitespace-nowrap">${status}</span>`;
+        }
+
+        function getPaymentBadge(status) {
+            const badges = {
+                'Unpaid': '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium whitespace-nowrap">💳 未繳費</span>',
+                'Paid': '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium whitespace-nowrap">💰 已繳費</span>'
+            };
+            return badges[status] || `<span class="px-2 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium whitespace-nowrap">${status || '未設定'}</span>`;
         }
 
         // --- Quick Actions ---
@@ -2348,12 +2401,13 @@
             showLoadingOverlay();
 
             try {
-                const response = await fetch(`${API_URL}?action=updateRegistration`, {
+                const response = await fetch(getApiUrl(), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        reg_id: regId,
-                        status: 'Approved'
+                        action: 'updateStatus',
+                        regId: regId,
+                        status: 'Approved',
+                        currentUser: currentUser ? currentUser.name : 'admin'
                     })
                 });
 
@@ -2363,7 +2417,10 @@
                 if (result.status === 'success') {
                     playAudio('success');
                     showPopup('成功', '已核准報名', 'success');
-                    loadEventRegistrations(currentEditingEventId);
+                    const eventData = allEventsData.find(e => e.event_id === currentEditingEventId);
+                    if (eventData) {
+                        await loadEventRegistrations(currentEditingEventId, eventData.form_config);
+                    }
                 } else {
                     playAudio('error');
                     showPopup('失敗', '核准失敗', 'error');
@@ -2382,12 +2439,13 @@
             showLoadingOverlay();
 
             try {
-                const response = await fetch(`${API_URL}?action=updateRegistration`, {
+                const response = await fetch(getApiUrl(), {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        reg_id: regId,
-                        status: 'Rejected'
+                        action: 'updateStatus',
+                        regId: regId,
+                        status: 'Rejected',
+                        currentUser: currentUser ? currentUser.name : 'admin'
                     })
                 });
 
@@ -2397,15 +2455,58 @@
                 if (result.status === 'success') {
                     playAudio('success');
                     showPopup('成功', '已拒絕報名', 'success');
-                    loadEventRegistrations(currentEditingEventId);
+                    const eventData = allEventsData.find(e => e.event_id === currentEditingEventId);
+                    if (eventData) {
+                        await loadEventRegistrations(currentEditingEventId, eventData.form_config);
+                    }
                 } else {
                     playAudio('error');
                     showPopup('失敗', '拒絕失敗', 'error');
                 }
             } catch (error) {
+                console.error("Quick Reject Error:", error);
                 hideLoadingOverlay();
                 playAudio('error');
                 showPopup('錯誤', '拒絕時發生錯誤', 'error');
+            }
+        }
+
+        async function confirmDeleteEvent() {
+            const eventId = document.getElementById('edit-evt-id').value;
+            if (!eventId) return;
+
+            if (!confirm('🛑 警告：確定要刪除此活動嗎？\n\n這將會永久刪除此活動及其「所有報名資料」，此操作無法復原！')) return;
+
+            playAudio('click');
+            showLoadingOverlay();
+
+            try {
+                const response = await fetch(getApiUrl(), {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'deleteEvent',
+                        eventId: eventId,
+                        currentUser: currentUser ? currentUser.name : 'admin'
+                    })
+                });
+
+                const result = await response.json();
+                hideLoadingOverlay();
+
+                if (result.status === 'success') {
+                    playAudio('success');
+                    showPopup('成功', '活動已成功刪除', 'success');
+                    closeEventManager();
+                    loadEvents();
+                } else {
+                    playAudio('error');
+                    showPopup('失敗', result.message || '刪除失敗', 'error');
+                }
+            } catch (error) {
+                console.error("Delete Event Error:", error);
+                hideLoadingOverlay();
+                playAudio('error');
+                showPopup('錯誤', '刪除活動時發生錯誤', 'error');
             }
         }
 
@@ -3044,7 +3145,7 @@
 
             if (query.includes('已報到') || query.includes('checked in')) {
                 return registrations.filter(r =>
-                    r.check_in_status && r.check_in_status !== 'Not Checked In'
+                    r.check_in_status === 'CheckedIn'
                 );
             }
 
@@ -3086,7 +3187,7 @@
             body.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center"><i class="fas fa-spinner fa-spin mr-2"></i>載入中...</td></tr>';
 
             try {
-                const res = await fetch(`${API_URL}?action=getUsers`);
+                const res = await fetch(`${getApiUrl()}?action=getUsers`);
                 const json = await res.json();
 
                 if (json.status === 'success' && json.data.length) {
@@ -3131,7 +3232,7 @@
         async function changeUserRole(sysId, newRole) {
             try {
                 showLoadingOverlay();
-                const res = await fetch(API_URL, {
+                const res = await fetch(getApiUrl(), {
                     method: 'POST',
                     body: JSON.stringify({
                         action: 'updateUserRole',
@@ -3165,7 +3266,7 @@
             if (!confirm("確定要刪除此帳號？")) return;
             try {
                 setLoading(true);
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteUser', sysId: sysId }) });
+                const res = await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify({ action: 'deleteUser', sysId: sysId }) });
                 const json = await res.json();
                 if (json.status === 'success') {
                     showPopup('成功', '帳號已刪除', 'success');
@@ -3195,7 +3296,7 @@
                     role: document.getElementById('new-u-role').value
                 };
 
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const res = await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify(payload) });
                 const json = await res.json();
 
                 if (json.status === 'success') {
@@ -3217,8 +3318,8 @@
         // --- Tab Logic ---
         function switchModalTab(tab) {
             // UI Classes
-            const activeClass = "border-b-2 border-blue-600 text-blue-600";
-            const inactiveClass = "text-gray-500 hover:text-gray-700";
+            const activeClass = "border-b-2 border-blue-600 text-blue-700 bg-blue-50/50 px-4 font-bold";
+            const inactiveClass = "text-gray-500 hover:text-gray-700 px-4 font-medium";
 
             // Reset buttons
             ['info', 'regs', 'checkin', 'landing'].forEach(t => {
@@ -3326,7 +3427,7 @@
                 document.getElementById('console-scan-status').classList.remove('hidden');
 
                 try {
-                    const res = await fetch(API_URL, {
+                    const res = await fetch(getApiUrl(), {
                         method: 'POST',
                         body: JSON.stringify({ action: 'checkIn', qrCodeData: decodedText })
                     });
@@ -3399,7 +3500,7 @@
                 // Actual Check-in Logic
                 playAudio('popup');
                 try {
-                    const res = await fetch(API_URL, {
+                    const res = await fetch(getApiUrl(), {
                         method: 'POST',
                         body: JSON.stringify({ action: 'checkIn', qrCodeData: decodedText })
                     });
@@ -3595,7 +3696,7 @@
             const btn = document.querySelector('button[onclick="repairDatabase()"]');
             setLoading(true, btn);
             try {
-                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) });
+                const res = await fetch(getApiUrl(), { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) });
                 const json = await res.json();
                 showPopup('成功', json.message, 'success');
             } catch (e) { showPopup('失敗', '修復失敗', 'error'); console.error(e); }
@@ -3632,7 +3733,7 @@
             setLoading(true, btn);
 
             try {
-                const res = await fetch(API_URL, {
+                const res = await fetch(getApiUrl(), {
                     method: 'POST',
                     body: JSON.stringify({ action: 'checkInByPhone', eventId: currentEditingEventId, phone: phone })
                 });
@@ -3714,7 +3815,7 @@
 
     <!-- Batch Operation Toolbar (Fixed Bottom) -->
     <div id="batch-toolbar"
-        class="hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-2xl z-40 animate__animated animate__slideInUp">
+        class="hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-blue-500 shadow-2xl z-[60] animate__animated animate__slideInUp">
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
