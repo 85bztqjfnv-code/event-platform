@@ -678,6 +678,8 @@
                 fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: 'fixHeaders' }) })
                     .catch(console.error);
 
+                playAudio('popup'); // Welcome sound
+
             } catch (e) {
                 console.error(e);
                 alert("載入 Dashboard 失敗: " + e.message);
@@ -825,6 +827,7 @@
 
         // Expose to window to ensure button onclick works
         window.openEventManager = async function (eventId) {
+            playAudio('popup');
             currentEditingEventId = eventId;
 
             const modal = document.getElementById('event-manager-modal');
@@ -1297,6 +1300,7 @@
         }
 
         function openCreateUserModal() {
+            playAudio('popup');
             document.getElementById('create-user-modal').classList.remove('hidden');
         }
 
@@ -1593,10 +1597,34 @@
         // Audio - Premium Sounds
         const audioSuccess = new Audio('https://actions.google.com/sounds/v1/science_fiction/scifi_input_accept.ogg');
         const audioError = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+        const audioClick = new Audio('https://actions.google.com/sounds/v1/ui/click_on_light.ogg'); // Light click
+        const audioPopup = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg'); // Pop sound
+
         function playAudio(type) {
-            if (type === 'success') audioSuccess.play().catch(console.error);
-            else audioError.play().catch(console.error);
+            try {
+                if (type === 'success') audioSuccess.play().catch(console.error);
+                else if (type === 'error') audioError.play().catch(console.error);
+                else if (type === 'click') {
+                    audioClick.currentTime = 0;
+                    audioClick.play().catch(console.error);
+                }
+                else if (type === 'popup') {
+                    audioPopup.currentTime = 0;
+                    audioPopup.play().catch(console.error);
+                }
+            } catch (e) {
+                console.warn("Audio play failed", e);
+            }
         }
+
+        // Global Click Listener for Sound
+        document.addEventListener('click', (e) => {
+            // Check if clicked element is interactive
+            if (e.target.matches('button, a, input[type="checkbox"], input[type="radio"], select') ||
+                e.target.closest('button, a, .clickable')) {
+                playAudio('click');
+            }
+        });
 
         // Scanner Modal
         function showScannerResult(title, message, type) {
