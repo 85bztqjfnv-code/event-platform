@@ -1626,7 +1626,12 @@
                 // Parse Custom Data
                 let customData = {};
                 try {
-                    customData = reg.dynamic_data ? JSON.parse(reg.dynamic_data) : {}; // Changed from custom_data
+                    // dynamic_data may already be parsed object (from GAS) or a JSON string
+                    if (typeof reg.dynamic_data === 'string') {
+                        customData = JSON.parse(reg.dynamic_data);
+                    } else if (typeof reg.dynamic_data === 'object' && reg.dynamic_data !== null) {
+                        customData = reg.dynamic_data;
+                    }
                 } catch (e) { console.error("Parse custom data error", e); }
 
                 // Build Dynamic Cells
@@ -2112,8 +2117,9 @@
                 const response = await fetch(getApiUrl(), {
                     method: 'POST',
                     body: JSON.stringify({
-                        action: 'batchApprove',
-                        regIds: regIds
+                        action: 'batchUpdateStatus',
+                        regIds: regIds,
+                        status: 'Approved'
                     })
                 });
 
@@ -2167,8 +2173,9 @@
                 const response = await fetch(getApiUrl(), {
                     method: 'POST',
                     body: JSON.stringify({
-                        action: 'batchReject',
-                        regIds: regIds
+                        action: 'batchUpdateStatus',
+                        regIds: regIds,
+                        status: 'Rejected'
                     })
                 });
 
@@ -2466,7 +2473,12 @@
             // Parse custom data
             let customData = {};
             try {
-                customData = reg.dynamic_data ? JSON.parse(reg.dynamic_data) : {};
+                // dynamic_data may already be parsed object (from GAS) or a JSON string
+                if (typeof reg.dynamic_data === 'string' && reg.dynamic_data) {
+                    try { customData = JSON.parse(reg.dynamic_data); } catch(e) { customData = {}; }
+                } else if (typeof reg.dynamic_data === 'object' && reg.dynamic_data !== null) {
+                    customData = reg.dynamic_data;
+                }
             } catch (e) { }
 
             // Checkbox cell
