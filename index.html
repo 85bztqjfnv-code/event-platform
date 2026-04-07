@@ -51,7 +51,7 @@
         }
 
         .glass-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
@@ -75,9 +75,17 @@
         }
 
         @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* === HERO SECTION === */
@@ -94,7 +102,7 @@
             left: -20%;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
             border-radius: 50%;
             animation: floatOrb 8s ease-in-out infinite;
         }
@@ -106,22 +114,29 @@
             right: -10%;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.25) 0%, transparent 70%);
             border-radius: 50%;
             animation: floatOrb 10s ease-in-out infinite reverse;
         }
 
         @keyframes floatOrb {
-            0%, 100% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-30px) scale(1.05); }
+
+            0%,
+            100% {
+                transform: translateY(0px) scale(1);
+            }
+
+            50% {
+                transform: translateY(-30px) scale(1.05);
+            }
         }
 
         .hero-grid {
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
         }
 
@@ -129,12 +144,12 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
             padding: 6px 16px;
             border-radius: 100px;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
             font-size: 0.8rem;
             font-weight: 600;
             letter-spacing: 0.1em;
@@ -151,8 +166,17 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
         }
 
         /* === MAIN CONTENT AREA === */
@@ -166,8 +190,8 @@
             background: #ffffff;
             border-radius: 24px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-            border: 1px solid rgba(226,232,240,0.8);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             display: flex;
@@ -176,8 +200,8 @@
 
         .event-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 24px 60px rgba(37,99,235,0.15);
-            border-color: rgba(147,197,253,0.6);
+            box-shadow: 0 24px 60px rgba(37, 99, 235, 0.15);
+            border-color: rgba(147, 197, 253, 0.6);
         }
 
         .event-card:hover .card-img {
@@ -200,12 +224,14 @@
         .glass-card {
             background: #ffffff;
             border-radius: 24px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-            border: 1px solid rgba(226,232,240,0.8);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
 
         /* === SCROLL FADE ANIMATIONS === */
-        [data-aos] { transition-duration: 0.6s !important; }
+        [data-aos] {
+            transition-duration: 0.6s !important;
+        }
 
         /* === SECTION TRANSITIONS === */
         .view-section {
@@ -213,8 +239,15 @@
         }
 
         @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* === BUTTON STYLES === */
@@ -226,7 +259,7 @@
             font-weight: 700;
             font-size: 1rem;
             transition: all 0.3s;
-            box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -235,10 +268,12 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 14px 32px rgba(37,99,235,0.45);
+            box-shadow: 0 14px 32px rgba(37, 99, 235, 0.45);
         }
 
-        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
     </style>
 </head>
 
@@ -250,7 +285,8 @@
             <div class="flex justify-between items-center h-18 py-4">
                 <!-- Logo -->
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/30">
+                    <div
+                        class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/30">
                         <i class="fas fa-calendar-check text-white text-sm"></i>
                     </div>
                     <span class="text-xl font-extrabold tracking-tight gradient-text">Seed Event Pro+</span>
@@ -281,13 +317,16 @@
         <div class="relative z-10 max-w-4xl mx-auto text-center py-16">
             <div class="hero-badge" data-aos="fade-down">
                 <span class="dot"></span>
-                Seed Event Pro+ · 精選活動平台
+                Seed Event Pro+ · 精選活動
             </div>
-            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-none mb-6" data-aos="fade-up" data-aos-delay="100">
+            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-none mb-6" data-aos="fade-up"
+                data-aos-delay="100">
                 探索精彩<br>
-                <span style="background: linear-gradient(90deg, #60a5fa, #a78bfa, #38bdf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">活動體驗</span>
+                <span
+                    style="background: linear-gradient(90deg, #60a5fa, #a78bfa, #38bdf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">活動體驗</span>
             </h1>
-            <p class="text-lg text-blue-200/80 max-w-xl mx-auto mb-10 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+            <p class="text-lg text-blue-200/80 max-w-xl mx-auto mb-10 leading-relaxed" data-aos="fade-up"
+                data-aos-delay="200">
                 報名精選活動，用 QR Code 輕鬆入場。<br>立即查看近期熱門活動。
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
@@ -302,8 +341,9 @@
         </div>
         <!-- Bottom Wave -->
         <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none" style="line-height:0">
-            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block; width:100%; height:60px;">
-                <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#f8fafc"/>
+            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+                style="display:block; width:100%; height:60px;">
+                <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#f8fafc" />
             </svg>
         </div>
     </div>
@@ -326,7 +366,8 @@
         <!-- Loading State -->
         <div id="loading" class="text-center py-28">
             <div class="inline-flex flex-col items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 animate-bounce">
+                <div
+                    class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 animate-bounce">
                     <i class="fas fa-calendar-alt text-white text-xl"></i>
                 </div>
                 <p class="text-slate-400 font-medium tracking-wide">載入活動中...</p>
@@ -344,7 +385,8 @@
             <!-- Back Button -->
             <button onclick="showSection('events')"
                 class="mb-8 flex items-center gap-2 text-slate-500 hover:text-blue-600 font-semibold transition-colors group">
-                <div class="w-8 h-8 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                <div
+                    class="w-8 h-8 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
                     <i class="fas fa-arrow-left text-sm"></i>
                 </div>
                 返回活動列表
@@ -352,8 +394,7 @@
 
             <!-- Event Poster Hero (Full-width) -->
             <div class="relative w-full rounded-3xl overflow-hidden mb-8 shadow-2xl" style="min-height: 420px;">
-                <img id="detail-image" src="" alt="Event Poster"
-                    class="w-full h-full object-cover absolute inset-0"
+                <img id="detail-image" src="" alt="Event Poster" class="w-full h-full object-cover absolute inset-0"
                     style="min-height: 420px;"
                     onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200'">
                 <!-- Gradient Overlay -->
@@ -362,10 +403,13 @@
                 <div class="absolute bottom-0 left-0 right-0 p-10 text-white z-10">
                     <div class="max-w-3xl">
                         <div class="flex flex-wrap gap-3 mb-4">
-                            <span id="detail-status-badge" class="px-3 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-bold rounded-full uppercase tracking-wider"></span>
-                            <span id="detail-price-badge" class="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full border border-white/30"></span>
+                            <span id="detail-status-badge"
+                                class="px-3 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-bold rounded-full uppercase tracking-wider"></span>
+                            <span id="detail-price-badge"
+                                class="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full border border-white/30"></span>
                         </div>
-                        <h1 class="text-4xl md:text-5xl font-black mb-4 drop-shadow-lg leading-tight" id="detail-name">Event Name</h1>
+                        <h1 class="text-4xl md:text-5xl font-black mb-4 drop-shadow-lg leading-tight" id="detail-name">
+                            Event Name</h1>
                         <div class="flex flex-wrap items-center gap-6 text-sm font-medium opacity-90">
                             <span class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
                                 <i class="far fa-calendar-alt text-blue-300"></i>
@@ -391,7 +435,8 @@
                             </div>
                             活動說明
                         </h2>
-                        <div id="detail-desc" class="text-slate-600 text-base leading-relaxed whitespace-pre-line text-justify">
+                        <div id="detail-desc"
+                            class="text-slate-600 text-base leading-relaxed whitespace-pre-line text-justify">
                             Description goes here...
                         </div>
                     </div>
@@ -419,14 +464,16 @@
                 <!-- Sidebar (Right 1/3) -->
                 <div class="space-y-5">
                     <!-- Price Card -->
-                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 text-center">
+                    <div
+                        class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 text-center">
                         <span class="block text-xs font-bold uppercase tracking-widest text-blue-200 mb-2">報名票價</span>
                         <span class="block text-4xl font-black mb-1" id="detail-price">$0</span>
                         <span class="text-blue-200 text-sm">每人</span>
                     </div>
 
                     <!-- Event Info Card -->
-                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-white/70 space-y-4">
+                    <div
+                        class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-white/70 space-y-4">
                         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">活動資訊</p>
                         <div class="flex items-start gap-3">
                             <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -525,10 +572,10 @@
         <div id="view-check" class="hidden max-w-xl mx-auto" data-aos="zoom-in">
             <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
                 <h2 class="text-3xl font-bold text-slate-800 mb-2 text-center">查詢報名狀態</h2>
-                <p class="text-center text-slate-400 mb-8">輸入資訊以查詢您的票券與 QR Code</p>
+                <p class="text-center text-slate-400 mb-8">輸入資訊以查詢您的報名狀態與報到 QR Code</p>
                 <form id="check-form" class="space-y-6">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Email 或 電話</label>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Email 或 手機</label>
                         <input type="text" id="check-query" placeholder="e.g. user@example.com" required
                             class="w-full p-4 bg-slate-50 border-0 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none">
                     </div>
@@ -679,18 +726,18 @@
                         // Extract name and phone robustly
                         let nameStr = r.participant_name || r.name || '目前無姓名資料';
                         let phoneStr = r.phone || '無電話';
-                        
+
                         try {
                             if (r.dynamic_data) {
                                 let fd = typeof r.dynamic_data === 'string' ? JSON.parse(r.dynamic_data) : r.dynamic_data;
-                                if(fd.name) nameStr = fd.name;
+                                if (fd.name) nameStr = fd.name;
                                 else if (fd['姓名']) nameStr = fd['姓名'];
-                                
-                                if(fd.phone) phoneStr = fd.phone;
+
+                                if (fd.phone) phoneStr = fd.phone;
                                 else if (fd['電話']) phoneStr = fd['電話'];
                                 else if (fd['聯絡電話']) phoneStr = fd['聯絡電話'];
                             }
-                        } catch(e) {}
+                        } catch (e) { }
 
                         // ID Badge HTML
                         return `
@@ -793,7 +840,7 @@
                 if (imgScr.includes('dropbox.com')) {
                     imgScr = imgScr.replace('?dl=0', '?raw=1').replace('www.dropbox.com', 'dl.dropboxusercontent.com');
                 }
-                
+
                 return `
                 <div class="event-card" 
                      onclick="showEventDetails('${event.event_id}')"
@@ -1073,9 +1120,9 @@
 
                 if (result.status === 'success') {
                     showSection('events');
-                    Swal.fire({ 
-                        icon: 'success', 
-                        title: '報名成功！', 
+                    Swal.fire({
+                        icon: 'success',
+                        title: '報名成功！',
                         text: '請等待審核通知，或隨時以 Email 查詢狀態。',
                         confirmButtonColor: '#3b82f6'
                     });

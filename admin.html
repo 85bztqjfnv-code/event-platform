@@ -241,6 +241,8 @@
                     class="tab-btn px-4 py-3.5 text-sm font-medium text-slate-400 hover:text-slate-700 whitespace-nowrap"><i class="fas fa-chart-line mr-1.5"></i>儀表板</button>
                 <button onclick="switchTab('events')" id="tab-events"
                     class="tab-btn px-4 py-3.5 text-sm font-medium text-slate-400 hover:text-slate-700 active-tab whitespace-nowrap"><i class="fas fa-calendar-alt mr-1.5"></i>活動列表</button>
+                <button onclick="switchTab('create-event')" id="tab-create-event"
+                    class="tab-btn px-4 py-3.5 text-sm font-medium text-slate-400 hover:text-slate-700 whitespace-nowrap"><i class="fas fa-plus-circle mr-1.5"></i>建立活動</button>
                 <button onclick="switchTab('users')" id="tab-users"
                     class="tab-btn px-4 py-3.5 text-sm font-medium text-slate-400 hover:text-slate-700 whitespace-nowrap"><i class="fas fa-users-cog mr-1.5"></i>帳號管理</button>
                 <button onclick="switchTab('logs')" id="tab-logs"
@@ -2758,24 +2760,30 @@
         }
 
         function updateCharts(stats) {
-            // Trend Chart
-            if (dashboardCharts.trend) {
-                const labels = Object.keys(stats.trend).reverse().map(dateStr => {
-                    const d = new Date(dateStr);
-                    return d.toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' });
-                });
-                const data = Object.values(stats.trend).reverse();
+            if (!stats) return;
 
-                dashboardCharts.trend.data.labels = labels;
-                dashboardCharts.trend.data.datasets[0].data = data;
-                dashboardCharts.trend.update();
+            // Trend Chart
+            if (dashboardCharts.trend && stats.trend) {
+                try {
+                    const labels = Object.keys(stats.trend).reverse().map(dateStr => {
+                        const d = new Date(dateStr);
+                        return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('zh-TW', { month: 'short', day: 'numeric' });
+                    });
+                    const data = Object.values(stats.trend).reverse();
+
+                    dashboardCharts.trend.data.labels = labels;
+                    dashboardCharts.trend.data.datasets[0].data = data;
+                    dashboardCharts.trend.update();
+                } catch(e) { console.error('Trend chart update failed:', e); }
             }
 
             // Status Chart
-            if (dashboardCharts.status) {
-                const dist = stats.distribution;
-                dashboardCharts.status.data.datasets[0].data = [dist.Pending, dist.Approved, dist.Rejected];
-                dashboardCharts.status.update();
+            if (dashboardCharts.status && stats.distribution) {
+                try {
+                    const dist = stats.distribution;
+                    dashboardCharts.status.data.datasets[0].data = [dist.Pending || 0, dist.Approved || 0, dist.Rejected || 0];
+                    dashboardCharts.status.update();
+                } catch(e) { console.error('Status chart update failed:', e); }
             }
         }
 
@@ -3441,7 +3449,7 @@
                 const json = await res.json();
 
                 if (json.status === 'success') {
-                    document.getElementById('create-user-modal').classList.add('hidden');
+                    // document.getElementById('create-user-modal').classList.add('hidden'); // Legacy modal removed
                     e.target.reset();
                     showPopup('成功', '帳號建立成功', 'success');
                     loadUsers();
