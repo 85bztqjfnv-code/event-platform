@@ -379,9 +379,8 @@
             <!-- Event Cards will be injected here -->
         </div>
 
-        <!-- 2. Event Details View (New) -->
         <!-- 2. Event Details View -->
-        <div id="view-details" class="hidden max-w-6xl mx-auto animate__animated animate__fadeIn pt-8 pb-16">
+        <div id="view-details" class="hidden max-w-6xl mx-auto pt-8 pb-16">
             <!-- Back Button -->
             <button onclick="showSection('events')"
                 class="mb-8 flex items-center gap-2 text-slate-500 hover:text-blue-600 font-semibold transition-colors group">
@@ -515,7 +514,8 @@
 
 
         <!-- 3. Registration Form View (New) -->
-        <div id="view-register" class="hidden max-w-2xl mx-auto animate__animated animate__fadeInUp">
+        <!-- 4. Register View -->
+        <div id="view-register" class="hidden max-w-2xl mx-auto">
             <button onclick="showSection('events')"
                 class="mb-6 flex items-center text-slate-500 hover:text-blue-600 transition-colors">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -569,7 +569,7 @@
 
 
         <!-- 4. Check Registration Section -->
-        <div id="view-check" class="hidden max-w-xl mx-auto" data-aos="zoom-in">
+        <div id="view-check" class="hidden max-w-xl mx-auto">
             <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
                 <h2 class="text-3xl font-bold text-slate-800 mb-2 text-center">查詢報名狀態</h2>
                 <p class="text-center text-slate-400 mb-8">輸入資訊以查詢您的報名狀態與報到 QR Code</p>
@@ -612,23 +612,38 @@
         });
 
         function showSection(section) {
-            // Hide all views first
-            ['view-events', 'view-details', 'view-register', 'view-check'].forEach(id => {
+            const allViews = ['view-events', 'view-details', 'view-register', 'view-check'];
+            // Remove animation classes and hide all views
+            allViews.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('animate__animated', 'animate__fadeIn', 'animate__fadeInUp', 'animate__zoomIn');
+                }
             });
 
+            const target = document.getElementById(`view-${section}`);
+            if (!target) return;
+            target.classList.remove('hidden');
+
+            // Apply appropriate animation
             if (section === 'events') {
-                document.getElementById('view-events').classList.remove('hidden');
                 mainHeader.style.display = 'block';
-            } else if (section === 'check') {
-                document.getElementById('view-check').classList.remove('hidden');
+            } else if (section === 'details') {
                 mainHeader.style.display = 'none';
+                target.classList.add('animate__animated', 'animate__fadeIn');
+            } else if (section === 'register') {
+                mainHeader.style.display = 'none';
+                target.classList.add('animate__animated', 'animate__fadeInUp');
+            } else if (section === 'check') {
+                mainHeader.style.display = 'none';
+                target.classList.add('animate__animated', 'animate__zoomIn');
             } else {
-                document.getElementById(`view-${section}`).classList.remove('hidden');
                 mainHeader.style.display = 'none';
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Instant scroll for responsiveness (no lag)
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
         // Fetch Events on Load
@@ -1223,7 +1238,7 @@
             }
         });
 
-        AOS.init();
+        AOS.init({ once: true, offset: 80, duration: 500 });
     </script>
 </body>
 
