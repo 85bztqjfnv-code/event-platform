@@ -6,95 +6,331 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="探索精彩活動，立即報名參加 | SEED EVENT+">
-    <meta name="keywords" content="活動報名,線上報名,活動管理,SEED EVENT">
-    <meta name="author" content="SEED EVENT+">
+    <meta name="description" content="探索精彩活動，立即報名參加 | Seed Event Pro+">
+    <meta name="keywords" content="活動報名,線上報名,活動管理,Seed Event Pro">
+    <meta name="author" content="Seed Event Pro+">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="">
-    <meta property="og:title" content="SEED EVENT+ | 探索精彩活動">
+    <meta property="og:title" content="Seed Event Pro+ | 探索精彩活動">
     <meta property="og:description" content="探索精彩活動，立即報名參加">
     <meta property="og:image" content="">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="">
-    <meta property="twitter:title" content="SEED EVENT+ | 探索精彩活動">
+    <meta property="twitter:title" content="Seed Event Pro+ | 探索精彩活動">
     <meta property="twitter:description" content="探索精彩活動，立即報名參加">
     <meta property="twitter:image" content="">
 
-    <title>SEED EVENT+</title>
+    <title>Seed Event Pro+</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="config.js" defer></script>
     <!-- Animation & Fonts -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;800&display=swap');
 
         body {
             font-family: 'Outfit', sans-serif;
             background: #f8fafc;
+            scroll-behavior: smooth;
         }
 
+        /* Enhanced Glassmorphism */
         .glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* === DESIGN TOKENS === */
+        :root {
+            --blue-primary: #2563eb;
+            --blue-dark: #1e40af;
+            --indigo: #4f46e5;
+            --cyan: #06b6d4;
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientMove 5s ease infinite;
         }
 
-        .hero-bg {
-            background: linear-gradient(120deg, #f0f9ff 0%, #e0f2fe 100%);
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
+
+        /* === HERO SECTION === */
+        .hero-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #1e3a8a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            left: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb 8s ease-in-out infinite;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(6,182,212,0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px 16px;
+            border-radius: 100px;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #22d3ee;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* === MAIN CONTENT AREA === */
+        .events-bg {
+            background: #f8fafc;
+            min-height: 60vh;
+        }
+
+        /* === PREMIUM CARD === */
+        .event-card {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            border: 1px solid rgba(226,232,240,0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 60px rgba(37,99,235,0.15);
+            border-color: rgba(147,197,253,0.6);
+        }
+
+        .event-card:hover .card-img {
+            transform: scale(1.08);
+        }
+
+        .card-img {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* === GLASS NAVBAR === */
+        .glass {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 1px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        .glass-card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            border: 1px solid rgba(226,232,240,0.8);
+        }
+
+        /* === SCROLL FADE ANIMATIONS === */
+        [data-aos] { transition-duration: 0.6s !important; }
+
+        /* === SECTION TRANSITIONS === */
+        .view-section {
+            animation: fadeSlideIn 0.4s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === BUTTON STYLES === */
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(37,99,235,0.45);
+        }
+
+        .btn-primary:active { transform: scale(0.97); }
     </style>
 </head>
 
-<body class="text-slate-700">
+<body class="text-slate-700 bg-[#f8fafc]">
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 transition-all duration-300 glass shadow-sm">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex justify-between h-20">
-                <div class="flex items-center">
-                    <span class="text-2xl font-extrabold tracking-tighter gradient-text">SEED EVENT+</span>
-                </div>
-                <div class="flex items-center space-x-8">
-                    <button onclick="showSection('events')"
-                        class="text-slate-500 hover:text-blue-600 font-medium transition-colors text-sm uppercase tracking-wide">Events</button>
-                    <button onclick="showSection('check')"
-                        class="text-slate-500 hover:text-blue-600 font-medium transition-colors text-sm uppercase tracking-wide">My
-                        Status</button>
-                    <div class="border-l border-gray-200 pl-8">
-                        <a href="admin.html"
-                            class="text-xs px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition-all">Admin</a>
+    <nav class="fixed w-full z-50 transition-all duration-300 glass">
+        <div class="max-w-7xl mx-auto px-6 lg:px-10">
+            <div class="flex justify-between items-center h-18 py-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/30">
+                        <i class="fas fa-calendar-check text-white text-sm"></i>
                     </div>
+                    <span class="text-xl font-extrabold tracking-tight gradient-text">Seed Event Pro+</span>
+                </div>
+                <!-- Nav Links -->
+                <div class="flex items-center gap-2">
+                    <button onclick="showSection('events')"
+                        class="px-4 py-2 text-sm font-semibold text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                        <i class="fas fa-calendar-alt mr-1.5"></i>活動列表
+                    </button>
+                    <button onclick="showSection('check')"
+                        class="px-4 py-2 text-sm font-semibold text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
+                        <i class="fas fa-ticket-alt mr-1.5"></i>查詢狀態
+                    </button>
+                    <div class="w-px h-6 bg-slate-200 mx-2"></div>
+                    <a href="admin.html"
+                        class="px-4 py-2 rounded-xl bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white text-xs font-bold transition-all shadow-sm">
+                        <i class="fas fa-shield-alt mr-1"></i>Admin
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="pt-32 pb-20 px-4 min-h-screen hero-bg">
+    <!-- HERO SECTION -->
+    <div id="main-header" class="hero-section pt-24 pb-20 px-4">
+        <div class="hero-grid"></div>
+        <div class="relative z-10 max-w-4xl mx-auto text-center py-16">
+            <div class="hero-badge" data-aos="fade-down">
+                <span class="dot"></span>
+                Seed Event Pro+ · 精選活動平台
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-none mb-6" data-aos="fade-up" data-aos-delay="100">
+                探索精彩<br>
+                <span style="background: linear-gradient(90deg, #60a5fa, #a78bfa, #38bdf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">活動體驗</span>
+            </h1>
+            <p class="text-lg text-blue-200/80 max-w-xl mx-auto mb-10 leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+                報名精選活動，用 QR Code 輕鬆入場。<br>立即查看近期熱門活動。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center" data-aos="fade-up" data-aos-delay="300">
+                <button onclick="showSection('events')" class="btn-primary">
+                    <i class="fas fa-fire"></i> 瀏覽所有活動
+                </button>
+                <button onclick="showSection('check')"
+                    class="px-7 py-3.5 rounded-xl font-bold text-white border border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur-md transition-all">
+                    <i class="fas fa-search mr-2"></i>查詢我的票券
+                </button>
+            </div>
+        </div>
+        <!-- Bottom Wave -->
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none" style="line-height:0">
+            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="display:block; width:100%; height:60px;">
+                <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#f8fafc"/>
+            </svg>
+        </div>
+    </div>
 
-        <!-- Header -->
-        <header id="main-header" class="text-center mb-16" data-aos="fade-up">
-            <h1 class="text-5xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-4">探索精彩活動</h1>
-            <p class="text-lg text-slate-500 max-w-2xl mx-auto">SEED EVENT+ 近期活動，立即報名參加。</p>
-        </header>
+    <!-- Main Content -->
+    <div class="events-bg pb-20 px-4 pt-2">
+        <!-- Section Label -->
+        <div class="max-w-7xl mx-auto pt-14 pb-8" id="events-section-header">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mb-1">近期活動</p>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">精選活動列表</h2>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 text-sm text-slate-400">
+                    <i class="fas fa-filter mr-1"></i> 全部活動
+                </div>
+            </div>
+        </div>
 
         <!-- Loading State -->
-        <div id="loading" class="text-center py-20">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto">
+        <div id="loading" class="text-center py-28">
+            <div class="inline-flex flex-col items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/30 animate-bounce">
+                    <i class="fas fa-calendar-alt text-white text-xl"></i>
+                </div>
+                <p class="text-slate-400 font-medium tracking-wide">載入活動中...</p>
             </div>
-            <p class="mt-6 text-slate-400 font-medium tracking-wide">載入活動中...</p>
         </div>
 
         <!-- 1. Event List View -->
@@ -103,77 +339,133 @@
         </div>
 
         <!-- 2. Event Details View (New) -->
-        <div id="view-details" class="hidden max-w-4xl mx-auto animate__animated animate__fadeIn">
+        <!-- 2. Event Details View -->
+        <div id="view-details" class="hidden max-w-6xl mx-auto animate__animated animate__fadeIn pt-8 pb-16">
+            <!-- Back Button -->
             <button onclick="showSection('events')"
-                class="mb-6 flex items-center text-slate-500 hover:text-blue-600 transition-colors">
-                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                返回列表
+                class="mb-8 flex items-center gap-2 text-slate-500 hover:text-blue-600 font-semibold transition-colors group">
+                <div class="w-8 h-8 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-arrow-left text-sm"></i>
+                </div>
+                返回活動列表
             </button>
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
-                <div class="h-64 bg-gradient-to-r from-blue-600 to-indigo-700 relative">
-                    <div class="absolute inset-0 bg-black/20"></div>
-                    <div class="absolute bottom-0 left-0 p-8 text-white">
-                        <h1 class="text-4xl font-extrabold mb-2" id="detail-name">Event Name</h1>
-                        <div class="flex items-center space-x-4 text-sm font-medium opacity-90">
-                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                    </path>
-                                </svg> <span id="detail-date"></span></span>
-                            <span class="flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                    </path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg> <span id="detail-loc"></span></span>
+
+            <!-- Event Poster Hero (Full-width) -->
+            <div class="relative w-full rounded-3xl overflow-hidden mb-8 shadow-2xl" style="min-height: 420px;">
+                <img id="detail-image" src="" alt="Event Poster"
+                    class="w-full h-full object-cover absolute inset-0"
+                    style="min-height: 420px;"
+                    onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200'">
+                <!-- Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                <!-- Event Title Overlay -->
+                <div class="absolute bottom-0 left-0 right-0 p-10 text-white z-10">
+                    <div class="max-w-3xl">
+                        <div class="flex flex-wrap gap-3 mb-4">
+                            <span id="detail-status-badge" class="px-3 py-1 bg-green-500/90 backdrop-blur-sm text-white text-xs font-bold rounded-full uppercase tracking-wider"></span>
+                            <span id="detail-price-badge" class="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full border border-white/30"></span>
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-black mb-4 drop-shadow-lg leading-tight" id="detail-name">Event Name</h1>
+                        <div class="flex flex-wrap items-center gap-6 text-sm font-medium opacity-90">
+                            <span class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                                <i class="far fa-calendar-alt text-blue-300"></i>
+                                <span id="detail-date"></span>
+                            </span>
+                            <span class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                                <i class="fas fa-map-marker-alt text-pink-300"></i>
+                                <span id="detail-loc"></span>
+                            </span>
                         </div>
                     </div>
                 </div>
-                <div class="p-10">
-                    <div class="flex justify-between items-start mb-8">
-                        <div class="prose prose-slate max-w-none text-slate-600">
-                            <p id="detail-desc" class="whitespace-pre-line text-lg leading-relaxed">Description goes
-                                here...</p>
-                        </div>
-                        <div class="ml-8 bg-slate-50 p-6 rounded-2xl border border-slate-100 min-w-[200px] text-center">
-                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">票價
-                                Price</span>
-                            <span class="block text-3xl font-extrabold text-slate-800" id="detail-price">$0</span>
+            </div>
+
+            <!-- Event Info Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Description (Left 2/3) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-white/70">
+                        <h2 class="text-xl font-bold text-slate-700 mb-5 flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <i class="fas fa-align-left text-blue-500 text-sm"></i>
+                            </div>
+                            活動說明
+                        </h2>
+                        <div id="detail-desc" class="text-slate-600 text-base leading-relaxed whitespace-pre-line text-justify">
+                            Description goes here...
                         </div>
                     </div>
 
-                    <!-- Social Sharing Buttons -->
-                    <div class="mb-8 flex items-center justify-center gap-3 pb-8 border-b border-slate-100">
-                        <span class="text-sm font-medium text-slate-500 mr-2">分享活動：</span>
-                        <button onclick="shareToFacebook()"
-                            class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-all shadow-sm hover:shadow-md">
-                            <i class="fab fa-facebook-f"></i>
-                            Facebook
-                        </button>
-                        <button onclick="shareToLine()"
-                            class="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all shadow-sm hover:shadow-md">
-                            <i class="fab fa-line"></i>
-                            LINE
-                        </button>
-                        <button onclick="copyPageLink()"
-                            class="flex items-center gap-2 px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-all shadow-sm hover:shadow-md">
-                            <i class="fas fa-link"></i>
-                            複製連結
-                        </button>
+                    <!-- Share Section -->
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-white/70">
+                        <p class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">分享此活動</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="shareToFacebook()"
+                                class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all shadow-sm hover:shadow-md text-sm">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                            <button onclick="shareToLine()"
+                                class="flex items-center gap-2 px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold transition-all shadow-sm hover:shadow-md text-sm">
+                                <i class="fab fa-line"></i> LINE
+                            </button>
+                            <button onclick="copyPageLink()"
+                                class="flex items-center gap-2 px-5 py-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl font-bold transition-all shadow-sm hover:shadow-md text-sm">
+                                <i class="fas fa-link"></i> 複製連結
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar (Right 1/3) -->
+                <div class="space-y-5">
+                    <!-- Price Card -->
+                    <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 text-center">
+                        <span class="block text-xs font-bold uppercase tracking-widest text-blue-200 mb-2">報名票價</span>
+                        <span class="block text-4xl font-black mb-1" id="detail-price">$0</span>
+                        <span class="text-blue-200 text-sm">每人</span>
                     </div>
 
+                    <!-- Event Info Card -->
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-white/70 space-y-4">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">活動資訊</p>
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <i class="far fa-calendar-alt text-blue-500 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">活動日期</p>
+                                <p class="font-bold text-slate-700 text-sm" id="detail-date-sidebar">-</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-pink-50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-pink-500 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">活動地點</p>
+                                <p class="font-bold text-slate-700 text-sm" id="detail-loc-sidebar">-</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-users text-green-500 text-sm"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-medium">報名容量</p>
+                                <p class="font-bold text-slate-700 text-sm" id="detail-capacity">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Button -->
                     <button id="btn-go-register" onclick="showRegisterForm()"
-                        class="w-full bg-slate-900 text-white py-5 rounded-2xl hover:bg-black font-bold text-xl shadow-lg shadow-blue-200/50 transition-all transform hover:-translate-y-1">
-                        立即報名 Join Event
+                        class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-blue-500/30 transition-all hover:-translate-y-1">
+                        <i class="fas fa-ticket-alt mr-2"></i> 立即報名 Join Now
                     </button>
                 </div>
             </div>
         </div>
+
 
         <!-- 3. Registration Form View (New) -->
         <div id="view-register" class="hidden max-w-2xl mx-auto animate__animated animate__fadeInUp">
@@ -251,19 +543,26 @@
 
     </div>
 
-    <!-- Notifications -->
-    <div id="notification"
-        class="fixed bottom-4 right-4 hidden bg-green-500 text-white px-6 py-3 rounded shadow-lg transition-opacity duration-500">
-        報名成功！
-    </div>
+    <!-- Notifications replaced smoothly by SweetAlert2 -->
 
     <script>
         // DOM Elements
         const loadingSpinner = document.getElementById('loading');
-        const modal = document.getElementById('modal'); // Note: This might be unused now
         const form = document.getElementById('registration-form');
-        const notif = document.getElementById('notification');
         const mainHeader = document.getElementById('main-header');
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "bottom-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            customClass: { popup: 'rounded-xl shadow-xl' },
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
 
         function showSection(section) {
             // Hide all views first
@@ -282,17 +581,18 @@
                 document.getElementById(`view-${section}`).classList.remove('hidden');
                 mainHeader.style.display = 'none';
             }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Fetch Events on Load
         window.addEventListener('DOMContentLoaded', async () => {
             if (!API_URL || API_URL.includes("REPLACE")) {
-                alert("請在 config.js 中設定 API_URL (Google Apps Script Deployment URL)");
+                Swal.fire({ icon: 'warning', title: '尚未設定 API', text: '請在 config.js 中設定 API_URL (Google Apps Script Deployment URL)' });
                 return;
             }
 
             try {
-                const response = await fetch(`${API_URL}?action=getEvents`);
+                const response = await fetch(`${API_URL}?action=getEvents&_t=${Date.now()}`);
                 const result = await response.json();
 
                 loadingSpinner.classList.add('hidden');
@@ -302,13 +602,13 @@
                     renderEvents(result.data.filter(e => e.status !== 'Draft'));
                     document.getElementById('view-events').classList.remove('hidden');
                 } else {
-                    document.getElementById('view-events').innerHTML = `<p class="col-span-full text-center text-gray-500">目前沒有開放的活動。</p>`;
+                    document.getElementById('view-events').innerHTML = `<p class="col-span-full text-center text-slate-500 glass-card p-10 rounded-2xl font-medium tracking-wide">目前沒有開放的活動。</p>`;
                     document.getElementById('view-events').classList.remove('hidden');
                 }
             } catch (error) {
                 console.error('Error:', error);
                 loadingSpinner.classList.add('hidden');
-                alert('載入活動失敗，請稍後再試。');
+                Swal.fire({ icon: 'error', title: '連線錯誤', text: '載入活動失敗，請稍後再試。' });
             }
         });
 
@@ -337,31 +637,37 @@
                             if (r.check_in_status === 'CheckedIn') {
                                 // Checked In State
                                 qrBlock = `
-                                    <div class="mt-4 text-center border-t pt-4 relative">
-                                        <div class="absolute inset-0 bg-white/80 flex items-center justify-center z-10 backdrop-blur-sm rounded">
-                                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full font-bold border border-green-200 shadow-sm">
-                                                <i class="fas fa-check-circle mr-1"></i> 已完成報到
-                                            </span>
+                                    <div class="mt-2 text-center relative border-t-2 border-dashed border-slate-200 pt-6 pb-2">
+                                        <div class="absolute inset-0 top-6 bg-white/70 flex items-center justify-center z-10 backdrop-blur-[2px] rounded-b-xl">
+                                            <div class="bg-white px-5 py-2.5 rounded-xl shadow-xl border border-green-100 transform rotate-[-10deg]">
+                                                <span class="text-green-600 font-black text-xl tracking-wider">
+                                                    <i class="fas fa-stamp mr-1.5"></i> 已報到
+                                                </span>
+                                            </div>
                                         </div>
-                                        <p class="text-sm text-slate-400 font-bold mb-2 line-through">入場 QR Code</p>
-                                        <img src="${qrUrl}" class="mx-auto border p-1 rounded opacity-20 grayscale" alt="QR Code">
-                                        <p class="text-xs text-slate-400 mt-2">此 QR Code 已失效</p>
+                                        <img src="${qrUrl}" class="mx-auto w-32 h-32 opacity-20 grayscale" alt="QR Code">
+                                        <p class="text-[10px] text-slate-400 mt-3 font-bold uppercase tracking-widest text-center">失效 INVALID</p>
                                     </div>
                                 `;
                             } else {
                                 // Normal State
                                 qrBlock = `
-                                    <div class="mt-4 text-center border-t pt-4">
-                                        <p class="text-sm text-green-600 font-bold mb-2">已核准！入場 QR Code:</p>
-                                        <img src="${qrUrl}" class="mx-auto border p-1 rounded shadow-sm hover:scale-105 transition-transform" alt="QR Code">
-                                        <p class="text-xs text-slate-400 mt-2">請於報到時出示此 QR Code</p>
+                                    <div class="mt-2 text-center border-t-2 border-dashed border-slate-200 pt-5 pb-2">
+                                        <p class="text-xs text-blue-600 font-black tracking-widest uppercase mb-3"><i class="fas fa-qrcode mr-1"></i> 請出示條碼 SCAN ME</p>
+                                        <img src="${qrUrl}" class="mx-auto w-40 h-40 p-2.5 bg-white border border-slate-200 rounded-2xl shadow-sm" alt="QR Code">
                                     </div>
                                 `;
                             }
                         } else if (r.qr_code_data && !showQr) {
                             qrBlock = `
-                                 <div class="mt-4 text-center border-t pt-4">
-                                     <p class="text-sm text-slate-400 font-medium mb-2">入場 QR Code (尚未開放顯示)</p>
+                                 <div class="mt-2 text-center border-t-2 border-dashed border-slate-200 pt-5 pb-2">
+                                     <p class="text-sm text-slate-400 font-bold mb-2"><i class="fas fa-lock mr-1.5"></i> QR Code 尚未開放顯示</p>
+                                 </div>
+                             `;
+                        } else {
+                            qrBlock = `
+                                 <div class="mt-2 text-center border-t-2 border-dashed border-slate-200 pt-5 pb-2">
+                                     <p class="text-sm text-slate-400 font-bold mb-2">無 QR Code</p>
                                  </div>
                              `;
                         }
@@ -370,28 +676,75 @@
                         if (r.status === 'Approved') statusColor = 'text-green-600';
                         if (r.status === 'Rejected') statusColor = 'text-red-600';
 
+                        // Extract name and phone robustly
+                        let nameStr = r.participant_name || r.name || '目前無姓名資料';
+                        let phoneStr = r.phone || '無電話';
+                        
+                        try {
+                            if (r.dynamic_data) {
+                                let fd = typeof r.dynamic_data === 'string' ? JSON.parse(r.dynamic_data) : r.dynamic_data;
+                                if(fd.name) nameStr = fd.name;
+                                else if (fd['姓名']) nameStr = fd['姓名'];
+                                
+                                if(fd.phone) phoneStr = fd.phone;
+                                else if (fd['電話']) phoneStr = fd['電話'];
+                                else if (fd['聯絡電話']) phoneStr = fd['聯絡電話'];
+                            }
+                        } catch(e) {}
+
+                        // ID Badge HTML
                         return `
-                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-                                <h3 class="font-bold text-xl text-slate-800 mb-1">${r.event_name || '未知活動'}</h3>
-                                <div class="flex items-center text-sm text-slate-500 mb-4">
-                                    <i class="fas fa-calendar-alt mr-2"></i> ${new Date(r.event_date).toLocaleDateString()} 
-                                    <span class="mx-2">|</span>
-                                    <i class="fas fa-map-marker-alt mr-2"></i> ${r.event_location}
+                            <div class="relative bg-white max-w-sm mx-auto rounded-2xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.15)] border border-slate-200 overflow-hidden transform transition-all hover:-translate-y-1 my-8">
+                                
+                                <!-- Lanyard simulation -->
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-1 w-20 h-5 bg-slate-50/20 rounded-b-3xl border-b border-l border-r border-white/20 shadow-inner flex justify-center items-end pb-1.5 z-20 backdrop-blur-sm">
+                                    <div class="w-10 h-1.5 bg-slate-300/80 rounded-full"></div>
                                 </div>
                                 
-                                <div class="grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl mb-2">
-                                    <div>
-                                        <span class="block text-xs text-slate-400 uppercase font-bold">報名狀態</span>
-                                        <span class="font-bold ${statusColor}">${r.status_tw || r.status}</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-xs text-slate-400 uppercase font-bold">付款狀態</span>
-                                        <span class="font-bold text-slate-700">${r.payment_status}</span>
-                                    </div>
+                                <!-- Header / Brand Color -->
+                                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 text-white pt-10 pb-8 px-6 text-center relative">
+                                    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat"></div>
+                                    <h3 class="font-black text-2xl tracking-tight leading-tight relative text-shadow-sm">${r.event_name || '活動通行證'}</h3>
+                                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-white/30 rounded-t-lg"></div>
                                 </div>
-                                ${qrBlock}
+                                
+                                <div class="p-6">
+                                    <!-- Participant Name & Phone -->
+                                    <div class="text-center mb-6">
+                                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">PARTICIPANT / 參加者</p>
+                                        <h4 class="text-2xl font-black text-slate-800 tracking-wide">${nameStr}</h4>
+                                        <p class="text-slate-500 font-medium mt-1 mb-2"><i class="fas fa-phone-alt text-slate-400 mr-1.5 text-xs"></i>${phoneStr}</p>
+                                    </div>
+                                    
+                                    <!-- Status Grid -->
+                                    <div class="grid grid-cols-2 gap-3 mb-5">
+                                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center shadow-sm">
+                                            <span class="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5">報名狀態</span>
+                                            <span class="font-black text-sm ${statusColor}">${r.status_tw || r.status}</span>
+                                        </div>
+                                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 text-center shadow-sm">
+                                            <span class="block text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5">付款狀態</span>
+                                            <span class="font-black text-sm text-slate-700">${r.payment_status}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Event Info Details -->
+                                    <div class="space-y-3 mb-6 bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+                                        <div class="flex items-start text-xs text-slate-600">
+                                            <div class="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 shrink-0"><i class="fas fa-calendar-alt mt-0.5"></i></div>
+                                            <span class="font-bold text-slate-700 mt-1">${new Date(r.event_date).toLocaleDateString()}</span>
+                                        </div>
+                                        <div class="flex items-start text-xs text-slate-600">
+                                            <div class="w-6 h-6 rounded-full bg-red-100 text-red-500 flex items-center justify-center mr-3 shrink-0"><i class="fas fa-map-marker-alt mt-0.5"></i></div>
+                                            <span class="font-bold text-slate-700 leading-relaxed mt-0.5 line-clamp-2">${r.event_location}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- QR Code Zone -->
+                                    ${qrBlock}
+                                </div>
                             </div>
-                         `;
+                        `;
                     }).join('');
                 } else {
                     resDiv.innerHTML = '<p class="text-center text-slate-500 py-8">查無相關報名資料，請確認輸入資訊是否正確。</p>';
@@ -408,7 +761,7 @@
         async function fetchEvents() {
             document.getElementById('loading').classList.remove('hidden');
             try {
-                const response = await fetch(`${API_URL}?action=getEvents`);
+                const response = await fetch(`${API_URL}?action=getEvents&_t=${Date.now()}`);
                 const result = await response.json();
                 if (result.status === 'success') {
                     window.allEvents = result.data;
@@ -432,42 +785,124 @@
         }
 
         function renderEvents(events) {
-            eventsContainer.innerHTML = events.map((event, index) => `
-                <div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden card-hover flex flex-col h-full cursor-pointer group" 
+            const header = document.getElementById('events-section-header');
+            if (header) header.style.display = events.length > 0 ? '' : 'none';
+
+            eventsContainer.innerHTML = events.map((event, index) => {
+                let imgScr = event.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=800';
+                if (imgScr.includes('dropbox.com')) {
+                    imgScr = imgScr.replace('?dl=0', '?raw=1').replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+                }
+                
+                return `
+                <div class="event-card" 
                      onclick="showEventDetails('${event.event_id}')"
-                     data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <div class="h-4 bg-gradient-to-r from-blue-500 to-indigo-600 group-hover:h-6 transition-all duration-300"></div>
-                    <div class="p-8 flex-1 flex flex-col">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-2xl font-bold text-slate-800 tracking-tight leading-tight mb-2 group-hover:text-blue-600 transition-colors">${event.name}</h3>
-                                <div class="flex items-center text-slate-500 text-sm font-medium">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                    ${new Date(event.date).toLocaleDateString()}
-                                </div>
-                            </div>
-                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full uppercase tracking-wide">
-                                $${event.price}
-                            </span>
+                     data-aos="fade-up" data-aos-delay="${index * 80}">
+                    <!-- Card Image -->
+                    <div class="h-52 overflow-hidden relative flex-shrink-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent z-10"></div>
+                        <img src="${imgScr}" 
+                             alt="${event.name}" class="card-img w-full h-full object-cover">
+                        <span class="absolute top-4 right-4 z-20 px-3 py-1.5 bg-white/95 backdrop-blur-md text-blue-700 text-xs font-extrabold rounded-full shadow-lg uppercase tracking-wider">
+                            ${Number(event.price) === 0 ? '免費' : '$' + event.price}
+                        </span>
+                        <span class="absolute bottom-4 left-4 z-20 px-2 py-1 bg-blue-600/90 backdrop-blur-md text-white text-xs font-bold rounded-lg">
+                            <i class="far fa-calendar-alt mr-1"></i>${new Date(event.date).toLocaleDateString('zh-TW')}
+                        </span>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="p-6 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">${event.name}</h3>
+                        <p class="text-slate-500 text-sm mb-4 line-clamp-2 leading-relaxed flex-1">${event.description || '暫無描述'}</p>
+                        <div class="flex items-center text-slate-400 text-xs mb-5 font-medium">
+                            <i class="fas fa-map-marker-alt mr-1.5 text-slate-300"></i>
+                            <span class="truncate">${event.location}</span>
                         </div>
-                        
-                        <p class="text-slate-500 text-base mb-6 line-clamp-3 leading-relaxed flex-1">${event.description || '暫無描述'}</p>
-                        
-                        <div class="pt-6 border-t border-slate-50 mt-auto">
-                            <div class="flex items-center text-slate-400 text-sm mb-4">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                ${event.location}
-                            </div>
-                            <div class="flex justify-center">
-                                <button onclick="showRegisterFormByEventId('${event.event_id}')"
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all shadow-md hover:shadow-lg active:scale-95">
-                                    立即報名 Join Now
-                                </button>
-                            </div>
-                        </div>
+                        <button onclick="event.stopPropagation(); showRegisterFormByEventId('${event.event_id}')"
+                            class="w-full btn-primary py-3 text-sm mt-auto">
+                            <i class="fas fa-ticket-alt mr-1.5"></i> 立即報名
+                        </button>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        // ====== showEventDetails (Event Detail Page) ======
+        function showEventDetails(eventId) {
+            selectedEvent = (window.allEvents || []).find(e => String(e.event_id) === String(eventId));
+            if (!selectedEvent) return;
+
+            const event = selectedEvent;
+
+            // --- Poster image (supports Dropbox: change ?dl=0 to ?raw=1) ---
+            let imageUrl = event.image_url || '';
+            if (imageUrl.includes('dropbox.com')) {
+                imageUrl = imageUrl.replace('?dl=0', '?raw=1').replace('www.dropbox.com', 'dl.dropboxusercontent.com');
+            }
+            const imgEl = document.getElementById('detail-image');
+            if (imageUrl) {
+                imgEl.src = imageUrl;
+                imgEl.style.display = 'block';
+            } else {
+                imgEl.src = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200';
+            }
+
+            // --- Title & basic info ---
+            document.getElementById('detail-name').innerText = event.name || '未知活動';
+
+            const dateStr = event.date ? new Date(event.date).toLocaleDateString('zh-TW', { year: 'numeric', month: 'long', day: 'numeric' }) : '日期未定';
+            document.getElementById('detail-date').innerText = dateStr;
+            const dateSidebar = document.getElementById('detail-date-sidebar');
+            if (dateSidebar) dateSidebar.innerText = dateStr;
+
+            const locStr = event.location || '地點未定';
+            document.getElementById('detail-loc').innerText = locStr;
+            const locSidebar = document.getElementById('detail-loc-sidebar');
+            if (locSidebar) locSidebar.innerText = locStr;
+
+            // --- Description ---
+            const descEl = document.getElementById('detail-desc');
+            descEl.innerHTML = event.description || '<span class="text-slate-400">暫無活動說明。</span>';
+
+            // --- Price ---
+            const priceNum = Number(event.price) || 0;
+            const priceText = priceNum === 0 ? '免費 FREE' : `$${priceNum}`;
+            document.getElementById('detail-price').innerText = priceNum === 0 ? '免費' : `$${priceNum}`;
+            const priceBadge = document.getElementById('detail-price-badge');
+            if (priceBadge) priceBadge.innerText = priceText;
+
+            // --- Status badge ---
+            const statusBadge = document.getElementById('detail-status-badge');
+            if (statusBadge) {
+                const statusMap = { 'Open': { text: '開放報名', cls: 'bg-green-500/90' }, 'Full': { text: '已額滿', cls: 'bg-red-500/90' }, 'Closed': { text: '報名截止', cls: 'bg-slate-500/90' }, 'Draft': { text: '草稿', cls: 'bg-yellow-500/90' } };
+                const s = statusMap[event.status] || { text: event.status, cls: 'bg-slate-500/90' };
+                statusBadge.innerText = s.text;
+                statusBadge.className = `px-3 py-1 ${s.cls} backdrop-blur-sm text-white text-xs font-bold rounded-full uppercase tracking-wider`;
+            }
+
+            // --- Capacity ---
+            const capEl = document.getElementById('detail-capacity');
+            if (capEl) {
+                capEl.innerText = event.max_capacity ? `${event.max_capacity} 人` : '不限人數';
+            }
+
+            // --- Register button state ---
+            const regBtn = document.getElementById('btn-go-register');
+            if (event.status !== 'Open') {
+                regBtn.disabled = true;
+                regBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                regBtn.classList.remove('hover:-translate-y-1');
+                regBtn.innerHTML = `<i class="fas fa-ban mr-2"></i> 報名已截止`;
+            } else {
+                regBtn.disabled = false;
+                regBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                regBtn.classList.add('hover:-translate-y-1');
+                regBtn.innerHTML = `<i class="fas fa-ticket-alt mr-2"></i> 立即報名 Join Now`;
+            }
+
+            updateMetaTags(event);
+            showSection('details');
         }
 
         function showRegisterFormByEventId(eventId) {
@@ -475,7 +910,7 @@
             if (!selectedEvent) return;
 
             if (selectedEvent.status !== 'Open') {
-                alert("此活動報名已截止");
+                Swal.fire({ icon: 'info', title: '報名已截止', text: '此活動目前不開放報名' });
                 return;
             }
 
@@ -486,13 +921,13 @@
         }
 
         // Load event directly from URL parameter
-        async function loadEventAndShowForm(eventId) {
+        async function loadEventAndShowDetails(eventId) {
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('view-events').classList.add('hidden');
             document.getElementById('main-header').classList.add('hidden');
 
             try {
-                const response = await fetch(`${API_URL}?action=getEvents`);
+                const response = await fetch(`${API_URL}?action=getEvents&_t=${Date.now()}`);
                 const result = await response.json();
 
                 if (result.status === 'success' && result.data) {
@@ -502,18 +937,20 @@
                     if (event) {
                         selectedEvent = event;
                         document.getElementById('loading').classList.add('hidden');
-                        showRegisterFormByEventId(eventId);
+                        showEventDetails(eventId);
                     } else {
-                        alert('找不到此活動');
-                        window.location.href = 'index.html';
+                        Swal.fire({ icon: 'error', title: '找不到活動', text: '將為您導回首頁' }).then(() => {
+                            window.location.href = 'index.html';
+                        });
                     }
                 } else {
                     throw new Error('Failed to load event');
                 }
             } catch (error) {
                 console.error('Error loading event:', error);
-                alert('載入活動失敗');
-                window.location.href = 'index.html';
+                Swal.fire({ icon: 'error', title: '載入失敗', text: '活動載入發生錯誤，將返回首頁' }).then(() => {
+                    window.location.href = 'index.html';
+                });
             }
         }
 
@@ -635,14 +1072,19 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    showSection('events'); // Return to events list
-                    showNotification('報名成功！請等待審核通知。');
+                    showSection('events');
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: '報名成功！', 
+                        text: '請等待審核通知，或隨時以 Email 查詢狀態。',
+                        confirmButtonColor: '#3b82f6'
+                    });
                 } else {
-                    alert('報名失敗: ' + result.message);
+                    Swal.fire({ icon: 'error', title: '報名失敗', text: result.message });
                 }
             } catch (error) {
                 console.error(error);
-                alert('發生錯誤，請檢查網路連線。');
+                Swal.fire({ icon: 'error', title: '系統錯誤', text: '發生錯誤，請檢查網路連線。' });
             } finally {
                 btn.disabled = false;
                 btn.innerText = originalText;
@@ -650,11 +1092,7 @@
         });
 
         function showNotification(msg) {
-            notif.innerText = msg;
-            notif.classList.remove('hidden');
-            setTimeout(() => {
-                notif.classList.add('hidden');
-            }, 3000);
+            Toast.fire({ icon: 'success', title: msg });
         }
     </script>
     <script>
@@ -673,7 +1111,7 @@
             const url = window.location.href;
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(url).then(() => {
-                    alert('✅ 連結已複製到剪貼簿！');
+                    Toast.fire({ icon: 'success', title: '✅ 連結已複製到剪貼簿！' });
                 }).catch(() => {
                     fallbackCopy(url);
                 });
@@ -691,9 +1129,9 @@
             textarea.select();
             try {
                 document.execCommand('copy');
-                alert('✅ 連結已複製到剪貼簿！');
+                Toast.fire({ icon: 'success', title: '✅ 連結已複製到剪貼簿！' });
             } catch (err) {
-                alert('❌ 複製失敗，請手動複製：' + text);
+                Swal.fire({ icon: 'error', title: '複製失敗', text: '請手動複製：' + text });
             }
             document.body.removeChild(textarea);
         }
@@ -730,8 +1168,8 @@
             const eventId = urlParams.get('event') || urlParams.get('id');
 
             if (eventId) {
-                // Load single event and go straight to form
-                loadEventAndShowForm(eventId);
+                // Load single event and go straight to details
+                loadEventAndShowDetails(eventId);
             } else {
                 // Load event list as normal
                 init();
